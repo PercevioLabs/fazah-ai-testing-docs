@@ -1,0 +1,12 @@
+audit_batch,auditor,scenario_id,turn_number,prompt_entered,files_selected,files_used,expected_change,actual_change,turn_result,main_issue,evidence_link,short_note
+A01,,S001,1,,,,,,,,,
+A01,,S003,1,,,,,,,,,
+A01,,S003,2,,,,,,,,,
+A01,,S035,1,,,,,,,,,
+A01,,S035,2,,,,,,,,,
+A01,,S035,3,,,,,,,,,
+A01,,S035,4,,,,,,,,,
+A01,,S035,5,,,,,,,,,
+A01,,S035,6,,,,,,,,,
+A01,,S035,7,,,,,,,,,
+A01,,S035,8,,,,,,,,,
