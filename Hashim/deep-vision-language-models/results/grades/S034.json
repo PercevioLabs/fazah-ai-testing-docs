@@ -1,0 +1,23 @@
+{
+  "scenario": "S034",
+  "turns": [
+    {"n": 1, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Assignment correctly spans both files with no DDPM-notes contamination and the alpha_i = 0.32 arithmetic is right, but the generated answer key contradicts the NCSN cheat sheet: weighted objective given as sigma^2*||sigma*S + eps||^2 (notes: ||sigma*S + eps||^2, no extra sigma^2) and the ALD update as alpha_i*S + sqrt(2*alpha_i)*Z (notes/trap: (alpha_i/2)*S + sqrt(alpha_i)*Z)."},
+    {"n": 2, "verdict": "Pass", "main_issue": "None", "note": "Revised proposal adds a dedicated Part A explicitly contrasting the NCSN score target with the FM velocity field, with both cheat sheets named in the instructions."},
+    {"n": 3, "verdict": "Pass", "main_issue": "None", "note": "Proposal gains a sampling part (ALD, predictor-corrector, probability-flow ODE — all genuinely in files 05/07) while keeping the targets part."},
+    {"n": 4, "verdict": "Pass", "main_issue": "None", "note": "Restructured to exactly three parts with 6+8+6 = 20 marks and total_marks 20 in params, content of Turns 1-3 carried into the parts."},
+    {"n": 5, "verdict": "Small Issue", "main_issue": "Other", "note": "Rubric only announced in-turn (body presumably a UI card); the criteria revealed at Turn 6 mirror the parts and sum to 20 but are generic (mathematical accuracy, conceptual clarity) rather than tied to the notes' specific formulas (-eps/sigma, v = x1 - x0) as the scenario wants."},
+    {"n": 6, "verdict": "Pass", "main_issue": "None", "note": "Genuine part-by-part alignment check: every part mapped to rubric criteria with per-part marks and a 20/20 total confirmed."},
+    {"n": 7, "verdict": "Pass", "main_issue": "None", "note": "Refine adds Part D on VE vs VP SDEs at 5 marks for a 25 total with Parts A-C explicitly kept at 6+8+6; VE-unbounded vs VP-bounded framing matches the notes, though it misattributes the VE-SDE to the NCSN notes (both SDEs live in 07_flow_matching_notes.pdf)."},
+    {"n": 8, "verdict": "Pass", "main_issue": "None", "note": "Confirms the rubric now grades all four parts to 25, consistent with the Part D criteria (2+2+1) already specified in the Turn 7 refine."},
+    {"n": 9, "verdict": "Pass", "main_issue": "None", "note": "Only Part B reworded into the misconception scenario at the same 8 marks, correctly citing Formula 6 (NCSN) for the stochastic term and Formula 4 (FM notes) for the deterministic probability-flow ODE."},
+    {"n": 10, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "Excellent behavior — actually detects the stale 'formulas & computation' criterion and rewrites Part B rubric to 2+3+2+1 = 8 keeping 25 total — but one criterion tells graders to credit 'the sqrt(2*alpha_i) scaling in the ALD formula', which contradicts the notes' sqrt(alpha_i)."},
+    {"n": 11, "verdict": "Pass", "main_issue": "None", "note": "Clean student handout: four parts, 25 marks, scenario-style Part B, and no rubric criteria or answer notes leak in."},
+    {"n": 12, "verdict": "Pass", "main_issue": "None", "note": "Names exactly 05 and 07 as sources and gives an honest inventory (including the initial 110-mark generation) with consistent 25-mark totals across assignment, rubric, and handout."}
+  ],
+  "overall": "Fail",
+  "understanding": "Yes",
+  "source_use": "Partly",
+  "output_quality": "Partly",
+  "conversation_handling": "Yes",
+  "highlight": "Document management across 12 turns was excellent (real alignment checks, targeted edits, leak-free handout, honest inventory), but the one real generated answer key states the weighted NCSN objective with a spurious extra sigma^2 and the ALD step with the wrong coefficients — the same ALD error S025 shows, so grading against the course notes would mark correct students wrong."
+}

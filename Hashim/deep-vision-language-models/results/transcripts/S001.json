@@ -1,0 +1,220 @@
+{
+ "scenario": "S001",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [
+  "06_diffusion_ddpm_ddim_notes.pdf"
+ ],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "whats the difference between ddpm and ddim sampling",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 10.2,
+   "text": "## DDPM vs. DDIM: Core Difference\n\n**DDPM (Denoising Diffusion Probabilistic Models)** uses a **Markovian, step-by-step** reverse process: you denoise one timestep at a time, always moving backward by 1 step (t → t-1). This requires T denoising steps to generate a single image.\n\n**DDIM (Denoising Diffusion Implicit Models)** uses **non-Markovian jumps**: you can skip steps and jump multiple timesteps forward or backward (t → t′, where t′ can be much smaller than t-1). This means you can generate high-quality images in far fewer steps — e.g., 50 steps instead of 1000.\n\n---\n\n## The Math\n\n### DDPM Denoising Step\nAt each step, the model predicts the noise and you denoise by exactly one step:\n\n$$X_{t-1} = \\frac{1}{\\sqrt{\\alpha_t}} \\left( X_t - \\frac{1-\\alpha_t}{\\sqrt{1-\\bar{\\alpha}_t}} \\epsilon_\\theta \\right) + \\sigma_t z_t$$\n\nwhere \\(z_t\\) is sampled randomness, and \\(\\sigma_t\\) controls the added noise.\n\n### DDIM Master Step (Jump Formula)\nInstead, DDIM jumps from step t directly to any step t′ (usually much smaller):\n\n$$X_{t'} = \\sqrt{\\bar{\\alpha}_{t'}} \\hat{X}^0 + \\sqrt{1 - \\bar{\\alpha}_{t'} - \\sigma_t^2} \\epsilon_\\theta + \\sigma_t z_t$$\n\nwhere \\(\\hat{X}^0\\) is the model's **current prediction of the clean image**, and you jump multiple steps in a single forward pass.\n\n---\n\n## Key Practical Differences\n\n| Aspect | DDPM | DDIM |\n|--------|------|------|\n| **Steps required** | ~1000 (full T) | ~50–200 (configurable) |\n| **Speed** | Very slow (100+ denoising calls) | ~10–20× faster |\n| **Randomness** | Always adds noise at each step | Controlled by \\(\\eta\\): \\(\\eta=1\\) → stochastic, \\(\\eta=0\\) → deterministic |\n| **Sample quality** | High (but slow) | Slightly lower (but nearly matching DDPM with tuning) |\n| **Reversibility** | Irreversible (Markovian) | Reversible when deterministic (\\(\\eta=0\\)) — acts like an ODE |\n\n---\n\n## When to Use Each\n\n- **DDPM**: Training or when you have unlimited inference time and want maximum quality.\n- **DDIM**: Real-time applications, interactive systems, or any scenario where speed matters — the quality loss is often negligible with proper tuning.\n\n### The DDIM → DDPM Connection\nIf you set \\(t' = t-1\\) (no skipping) and \\(\\eta = 1\\) (maximum stochasticity), DDIM's formula mathematically collapses exactly into the DDPM denoising step. So DDPM is a special case of DDIM.",
+   "source_mode": "file",
+   "follow_ups": [
+    "What does the η parameter control in DDIM?",
+    "Why is deterministic DDIM useful?",
+    "How do you choose the jump timesteps in DDIM?"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 2,
+   "prompt": "add the eta parameter to that, what does it actually control",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 9.7,
+   "text": "## The η (eta) Parameter: Stochasticity Control\n\nThe η parameter in DDIM directly controls **how much randomness to inject at each denoising step**. It scales the noise term in the DDIM jump:\n\n$$X_{t'} = \\sqrt{\\bar{\\alpha}_{t'}} \\hat{X}^0 + \\sqrt{1 - \\bar{\\alpha}_{t'} - \\sigma_t^2} \\epsilon_\\theta + \\sigma_t z_t$$\n\nwhere the **noise variance** is defined as:\n\n$$\\sigma_t^2 = \\eta \\cdot \\frac{1 - \\bar{\\alpha}_{t'}}{1 - \\bar{\\alpha}_t} \\cdot (1 - \\frac{\\bar{\\alpha}_t}{\\bar{\\alpha}_{t'}})$$\n\n---\n\n## What η Actually Does\n\n- **η = 1**: **Maximum stochasticity** — you add the full computed variance. Each step includes significant randomness, making the process fully stochastic. This matches the original DDPM behavior (if you also set \\(t' = t-1\\)).\n\n- **η = 0**: **Deterministic** — the noise term vanishes (\\(\\sigma_t = 0\\)), so \\(z_t\\) contributes nothing. The denoising becomes a **pure ODE** (ordinary differential equation) — completely reversible and deterministic. Same input seed → identical output every time.\n\n- **0 < η < 1**: **Interpolation** — you blend between deterministic and stochastic. Lower η = smoother, more constrained generation; higher η = more variation, more exploration of the data distribution.\n\n---\n\n## Practical Impact\n\n| η Value | Behavior | Use Case |\n|---------|----------|----------|\n| **0** | Fully deterministic; acts like an ODE solver | Reproducible results, controllable generation, latent-space interpolation |\n| **0.5–0.7** | Balanced: some randomness, still controlled | Best quality-to-speed tradeoff for sampling |\n| **1** | Full DDPM-like stochasticity | Maximum diversity, matches training-time noise schedule |\n\n---\n\n## Why It Matters for DDIM\n\nIn the **notes**, the key insight is:\n\n> **\"Deterministic DDIM: If a question mentions 'ODE solver,' 'deterministic generation,' or [η = 0], immediately set η = 0. The z term disappears, making the process perfectly reversible.\"**\n\nThis is why DDIM is so powerful: **with η = 0, you get fast sampling (50 steps instead of 1000) AND perfect determinism**. You can jump from a noisy image straight to clean in a predictable way, which is impossible in standard DDPM.\n\n---\n\n## Example\n\n- **η = 1, t' = t-1**: You're doing standard DDPM denoising — slow, stochastic, high quality.\n- **η = 0, t' = 50**: You jump from step 999 to step 50 in one call, deterministically. The model predicts where you'll land cleanly with no randomness added. Next call jumps to step 25, then 0. Result: 4 steps total to generate an image.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "ok and remind me how the closed-form forward jump works, why can we go straight to any t",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 10.3,
+   "text": "## The Closed-Form Forward Jump: Why You Can Jump to Any t\n\nThe key is that the **forward process is a sum of independent Gaussians**, which collapses into a single Gaussian.\n\n---\n\n## Building It Step-by-Step\n\nStarting from a clean image \\(X_0\\), the iterative forward process adds noise one step at a time:\n\n$$X_1 = \\sqrt{\\alpha_1} X_0 + \\sqrt{1-\\alpha_1} \\epsilon_1$$\n$$X_2 = \\sqrt{\\alpha_2} X_1 + \\sqrt{1-\\alpha_2} \\epsilon_2$$\n$$X_3 = \\sqrt{\\alpha_3} X_2 + \\sqrt{1-\\alpha_3} \\epsilon_3$$\n$$\\vdots$$\n\nIf you substitute step-by-step, you get a **linear combination of independent noise samples** \\(\\epsilon_1, \\epsilon_2, \\epsilon_3, \\ldots\\):\n\n$$X_t = \\sqrt{\\alpha_1 \\alpha_2 \\cdots \\alpha_t} X_0 + \\text{(some mix of all the }\\epsilon\\text{'s)}$$\n\n---\n\n## The Reparameterization Trick\n\nHere's the magic: **the sum of independent Gaussians is itself Gaussian**. So all that mixed noise collapses into a single Gaussian with one effective variance.\n\nDefine:\n$$\\bar{\\alpha}_t = \\prod_{i=1}^{t} \\alpha_i \\quad \\text{(cumulative product of all retention factors)}$$\n\nThen the **closed-form jump** is:\n\n$$X_t = \\sqrt{\\bar{\\alpha}_t} X_0 + \\sqrt{1 - \\bar{\\alpha}_t} \\epsilon$$\n\nwhere \\(\\epsilon \\sim \\mathcal{N}(0, I)\\) is a **single, fresh Gaussian noise sample**.\n\n---\n\n## Why This Works: Variance Addition\n\nWhen you add Gaussians, their **variances add linearly**. So:\n- Iterative: \\(\\text{Var}(\\epsilon_1) + \\text{Var}(\\epsilon_2) + \\cdots + \\text{Var}(\\epsilon_t)\\)\n- Closed-form: \\(\\text{Var}(\\epsilon) = \\sum \\text{(all variances)}\\)\n\nBoth produce the **same distribution**. No information is lost; you're just computing the final state directly without visiting t-1, t-2, etc.\n\n---\n\n## Consequence: Jump to ANY t\n\nBecause the forward process **only depends on the cumulative product \\(\\bar{\\alpha}_t\\)**, you can jump directly from \\(X_0\\) to **any arbitrary timestep** \\(t\\):\n\n$$X_t = \\sqrt{\\bar{\\alpha}_t} X_0 + \\sqrt{1 - \\bar{\\alpha}_t} \\epsilon$$\n\n- Want \\(X_{50}\\)? Use \\(\\bar{\\alpha}_{50}\\).\n- Want \\(X_{999}\\)? Use \\(\\bar{\\alpha}_{999}\\).\n- Want \\(X_{1000}\\)? Use \\(\\bar{\\alpha}_{1000}\\).\n\n**No intermediate steps needed.** This is why diffusion models can generate images from pure noise by starting at step \\(T\\) (where \\(\\bar{\\alpha}_T \\approx 0\\), so \\(X_T \\approx \\mathcal{N}(0, I)\\)) and working backward to step 0 — the math is completely reversible.\n\n---\n\n## In the Exam Notes\n\nYour notes say it directly:\n\n> **\"The Reparameterization Trick: If asked why we can write \\(X_t\\) in closed form, state that the sum of multiple independent Gaussians is also Gaussian. Variances add up, which collapses the iterative product into \\(\\bar{\\alpha}_t\\).\"**\n\nThis is the foundational reason DDIM can skip steps — because the forward process has this closed form, the reverse process can also jump directly, as long as you predict the noise correctly.\n\n```\nX_0 (clean) ──→ X_50 ──→ X_100 ──→ ... ──→ X_999 ──→ X_T (pure noise)\n                 (jump)    (jump)           (jump)     (1 step each, or any interval)\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "turn all this into 4 short quiz qs w/ answers",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 12.2,
+   "text": "Here's a 4-question quiz on the closed-form forward jump and DDIM η parameter — grounded in your notes.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make it harder",
+    "Add more DDIM sampling questions",
+    "Create a matching quiz on posteriors"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": [
+    {
+     "title": "DDPM & DDIM: Forward Jump & η Parameter Quiz",
+     "type": "assessment",
+     "params": {
+      "topic": "Closed-form forward jump & DDIM η parameter",
+      "assessment_type": "quiz",
+      "question_count": 4,
+      "question_types": [
+       "short_answer",
+       "mcq"
+      ],
+      "language": "en",
+      "level": "intermediate",
+      "additional_instructions": "Question 1: Explain why the closed-form forward jump works (reparameterization trick). Question 2: MCQ on what η controls in DDIM. Question 3: Short-answer on η=0 vs η=1 behavior. Question 4: MCQ on jumping to arbitrary timesteps."
+     }
+    }
+   ],
+   "artifact": {
+    "assessment_id": "3b30dedf-fbb3-42c5-9b20-10db1f908049",
+    "status": "completed",
+    "latency_s": 39.4,
+    "title": "Quiz: Closed-Form Forward Jump & DDIM η Parameter (AI623)",
+    "question_total": 4,
+    "marks_total": 25,
+    "types": [
+     "mcq",
+     "short_answer"
+    ],
+    "questions": [
+     {
+      "n": 1,
+      "type": "short_answer",
+      "marks": 7,
+      "text": "Explain why the closed-form forward jump formula \\(X_t = \\sqrt{\\bar{\\alpha}_t} X_0 + \\sqrt{1 - \\bar{\\alpha}_t} \\epsilon_t\\) works without needing to iterate through all intermediate timesteps. Reference the reparameterization trick in your answer."
+     },
+     {
+      "n": 2,
+      "type": "short_answer",
+      "marks": 6,
+      "text": "In DDIM sampling, describe what happens to the sampling process when \\(\\eta = 0\\) versus when \\(\\eta = 1\\). How does this difference affect generation speed and image quality?"
+     },
+     {
+      "n": 3,
+      "type": "mcq",
+      "marks": 6,
+      "text": "What does the parameter \\(\\eta\\) (eta) control in the DDIM variance formula \\(\\sigma_t = \\eta \\sqrt{\\frac{1-\\bar{\\alpha}_t}{1-\\bar{\\alpha}_{t'}}} \\sqrt{1 - \\frac{\\bar{\\alpha}_{t'}}{\\bar{\\alpha}_t}}\\)?"
+     },
+     {
+      "n": 4,
+      "type": "mcq",
+      "marks": 6,
+      "text": "In DDIM, what is the key advantage of being able to jump from an arbitrary timestep \\(t\\) directly to an earlier timestep \\(t'\\) (where \\(t' \\ll t\\)) using the closed-form forward jump?"
+     }
+    ],
+    "answer_key": [
+     {
+      "n": 1,
+      "answer": "The reparameterization trick works because the sum of multiple independent Gaussian random variables is itself a Gaussian, and their variances add linearly. When composing multiple diffusion steps q(x_t | x_{t-1}) iteratively from x_0 to x_t, each step adds independent noise with variances β_i. This"
+     },
+     {
+      "n": 2,
+      "answer": "When η = 0, the DDIM variance σ_t = 0, making the sampling process completely deterministic—there is no randomness, and the reverse diffusion follows a fixed trajectory (an ODE). This allows very fast sampling with far fewer steps than DDPM, but the trade-off is reduced diversity. When η = 1, the fu"
+     },
+     {
+      "n": 3,
+      "answer": "A"
+     },
+     {
+      "n": 4,
+      "answer": "A"
+     }
+    ]
+   }
+  },
+  {
+   "n": 5,
+   "prompt": "now a student version of those 4, no answers",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 6.5,
+   "text": "```markdown\n# Quiz: Closed-Form Forward Jump & DDIM η Parameter\n\n**Instructions:** Answer all 4 questions. Show your working where applicable.\n\n---\n\n## Q1 (short answer, 7 marks)\nExplain why the closed-form forward jump formula \n$$X_t = \\sqrt{\\bar{\\alpha}_t} X_0 + \\sqrt{1 - \\bar{\\alpha}_t} \\epsilon_t$$\nworks without needing to iterate through all intermediate timesteps. Reference the reparameterization trick in your answer.\n\n---\n\n## Q2 (short answer, 6 marks)\nIn DDIM sampling, describe what happens to the sampling process when $\\eta = 0$ versus when $\\eta = 1$. How does this difference affect generation speed and image quality?\n\n---\n\n## Q3 (multiple choice, 6 marks)\nWhat does the parameter $\\eta$ (eta) control in the DDIM variance formula \n$$\\sigma_t = \\eta \\sqrt{\\frac{1-\\bar{\\alpha}_{t'}}{1-\\bar{\\alpha}_t}} \\sqrt{1 - \\frac{\\bar{\\alpha}_{t'}}{\\bar{\\alpha}_t}}$$\n\nA. The amount of randomness or stochasticity to inject during the reverse diffusion step  \nB. The cumulative signal retention schedule from timestep 0 to t  \nC. The signal-to-noise ratio at a particular timestep  \nD. The interpolation factor for learnable variance in Improved DDPM\n\n---\n\n## Q4 (multiple choice, 6 marks)\nIn DDIM, what is the key advantage of being able to jump from an arbitrary timestep $t$ directly to an earlier timestep $t'$ (where $t' \\ll t$) using the closed-form forward jump?\n\nA. It allows deterministic sampling with significantly fewer denoising steps while maintaining the ability to reverse the process  \nB. It eliminates the need to calculate the noise schedule $\\beta_t$ and cumulative product $\\bar{\\alpha}_t$  \nC. It enables the model to predict the final clean image at any intermediate step without training on that timestep  \nD. It removes the requirement for reparameterization and allows direct sampling from the posterior distribution\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "which course file did you use for all this",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 2.3,
+   "text": "I used **06_diffusion_ddpm_ddim_notes.pdf** — the file you attached to this message.\n\nThat's where all the formulas, the η parameter explanation, the reparameterization trick, and the exam keywords came from. It's your course's cheat sheet for diffusion, DDPM, and DDIM.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  }
+ ]
+}

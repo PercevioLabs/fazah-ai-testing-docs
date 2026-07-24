@@ -1,0 +1,21 @@
+{
+  "scenario": "S031",
+  "turns": [
+    {"n": 1, "verdict": "Fail", "main_issue": "Clarification problem", "note": "Reply dangles — 'A couple of quick choices to nail the structure:' — with no choices, no clarify payload, and no lesson plan produced."},
+    {"n": 2, "verdict": "Pass", "main_issue": "None", "note": "Proposes the lesson-plan card with correct params (PPO/DPO/GRPO topic, 180-minute duration, graduate lecture); per-section timings and break claimed and judged at proposal level."},
+    {"n": 3, "verdict": "Pass", "main_issue": "None", "note": "Adds the 10-minute matching activity pairing each method to policy/reference/reward/critic, and the activity genuinely shows up in the turn-5 outline."},
+    {"n": 4, "verdict": "Pass", "main_issue": "None", "note": "Pipeline 15->25 offset by worked-examples 20->10 (net zero, 180 claimed), and the turn-5 outline confirms exactly those durations."},
+    {"n": 5, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Objectives themselves are on-target, but the embedded outline's sections sum to 155 minutes against the stated 180 (25 minutes missing), and its activity debrief key says 'GRPO = policy + reference only' — the deck drops only the critic, not the reward model."},
+    {"n": 6, "verdict": "Small Issue", "main_issue": "None", "note": "Exactly three well-grounded discussion questions (reference/KL, reward-model trade-off, group normalization), but pitched to a '25-min group segment' that does not exist in the plan's outline."},
+    {"n": 7, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Handout sign-flips the PPO reward shaping to r = beta*log(pi_theta/pi_ref) (file 09 has beta*log(pi_ref/pi_theta)) and states GRPO needs only 2 models with reward model 'No'; no timing/answer-key leakage into the student copy though."},
+    {"n": 8, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Quiz mechanics are good (marks 5+3+4+5+3=20; rho=0.3/0.2=1.5; GRPO mean 6.5, pop std ~1.118, advantage ~1.34 all correct), but the Q2 answer key marks GRPO's reward model as not required — unsupported by the selected deck/notes — and the rubric tops out at '20-22 marks' on a 20-mark quiz."},
+    {"n": 9, "verdict": "Pass", "main_issue": "None", "note": "Student version reproduces the same five questions with identical wording, order and marks, answers fully removed."},
+    {"n": 10, "verdict": "Small Issue", "main_issue": "None", "note": "Names exactly the two selected files and a real artifact list, but the inventory's timings (PPO 35, DPO&GRPO 30, discussion 25, break 10) do not match the actual turn-5 outline (30, 25+20, no discussion segment, break 15)."}
+  ],
+  "overall": "Fail",
+  "understanding": "Yes",
+  "source_use": "Partly",
+  "output_quality": "Partly",
+  "conversation_handling": "Partly",
+  "highlight": "The lesson plan is labeled 180 minutes but its sections sum to 155, and the handout plus quiz answer key repeatedly claim GRPO needs no reward model (the deck only drops the critic) alongside a sign-flipped PPO reward-shaping formula."
+}

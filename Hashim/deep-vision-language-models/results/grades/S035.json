@@ -1,0 +1,23 @@
+{
+  "scenario": "S035",
+  "turns": [
+    {"n": 1, "verdict": "Pass", "main_issue": "None", "note": "Generated exactly 6 short-answer Qs with answers, all grounded in file 04 (DAE corruption, Tweedie, reparameterization, KL, posterior collapse, Gaussian NLL); source_mode=file."},
+    {"n": 2, "verdict": "Pass", "main_issue": "None", "note": "Refine correctly scoped to single_question with target_question_number=3 (Tweedie), explicitly leaving the rest untouched."},
+    {"n": 3, "verdict": "Pass", "main_issue": "None", "note": "Refine instruction hardens only Q2 and Q6 and says 'Keep Q1, Q3, Q4, Q5 verbatim'; count stays six."},
+    {"n": 4, "verdict": "Pass", "main_issue": "None", "note": "Correctly reported there is no hierarchical-VAE question to drop instead of deleting something unrelated."},
+    {"n": 5, "verdict": "Small Issue", "main_issue": "Clarification problem", "note": "Asked which question to swap out (reasonable since count was still 6) but never noted Q5 already covers posterior collapse, and no edit was ever applied."},
+    {"n": 6, "verdict": "Pass", "main_issue": "None", "note": "Reorder refine explicitly says keep all question content, answers, and marks unchanged — only reorder foundational to advanced."},
+    {"n": 7, "verdict": "Pass", "main_issue": "None", "note": "Version B proposed as a new 6-question advanced assessment without modifying the existing artifact (version A untouched); judged on params per API allowance."},
+    {"n": 8, "verdict": "Fail", "main_issue": "Lost previous work", "note": "Student version has 6 Qs and zero answers (no leakage), but two version-A questions drifted: the DAE forward-corruption and KL-divergence questions were silently replaced by an ELBO question and a new diagnosis question."},
+    {"n": 9, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "Teacher key matches the turn-8 student set exactly and answers are grounded, but the Gaussian NLL is written (1/(2σ²))(x−μ)² + log σ² while the notes put the ½ on both terms: ½[(x−μ)²/σ² + log σ²]."},
+    {"n": 10, "verdict": "Pass", "main_issue": "None", "note": "Added a grading-oriented explanation to every answer, kept the key's answers verbatim, and did not touch the student version."},
+    {"n": 11, "verdict": "Pass", "main_issue": "None", "note": "Reported 6 questions in version A and 6 in version B, consistent with the student copy and teacher key."},
+    {"n": 12, "verdict": "Pass", "main_issue": "None", "note": "Named 04_vae_denoising_autoencoders_notes.pdf as the only source and inventoried version A student copy, teacher key with explanations, and version B honestly."}
+  ],
+  "overall": "Fail",
+  "understanding": "Yes",
+  "source_use": "Yes",
+  "output_quality": "Partly",
+  "conversation_handling": "Partly",
+  "highlight": "The turn-8 'clean student version of version A' silently swapped two of version A's questions (DAE forward-corruption and KL divergence became ELBO and a diagnosis question), so the student copy and teacher key no longer match the set built in turns 1-6 even though the count held at six and no answers leaked."
+}

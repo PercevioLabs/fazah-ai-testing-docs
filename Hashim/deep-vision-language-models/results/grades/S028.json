@@ -1,0 +1,20 @@
+{
+  "scenario": "S028",
+  "turns": [
+    {"n": 1, "verdict": "Small Issue", "main_issue": "None", "note": "Pipeline (SFT -> Bradley-Terry reward model -> policy optimization with KL) and all three method sketches are sound, but the deck's 'helpful, harmless, honest' framing is missing and source_mode=general — note the harness never selected 11_ppo_dpo_grpo_alignment.pptx until turn 9."},
+    {"n": 2, "verdict": "Fail", "main_issue": "Incorrect content", "note": "States PPO needs THREE models (policy, reference, reward) and never mentions the critic; the PA2 deck says 'needs policy, reference, reward, and critic models' — the scenario's core four-model fact is contradicted."},
+    {"n": 3, "verdict": "Pass", "main_issue": "None", "note": "DPO explained via the optimal KL-regularized policy reparameterization, exact DPO loss with policy-vs-reference log-ratios for y+ and y-, reward model dropped while the reference model explicitly survives."},
+    {"n": 4, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Says GRPO 'drops the reward model entirely — just like DPO' and needs only verifiable outcomes; the deck says GRPO drops the CRITIC and normalizes rewards within the group (the group advantage formula and +1.0 example do match Problem 9)."},
+    {"n": 5, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Headline 'all three need it' is right, but then declares GRPO's reference model 'mostly optional' / replaceable by clipping, contradicting the deck's summary that all methods use a reference model for KL control."},
+    {"n": 6, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Comparison table lists PPO as 3 total models with no critic row anywhere and GRPO's reference as '(or optional)'; the response is also truncated mid-sentence in the loss-function table."},
+    {"n": 7, "verdict": "Fail", "main_issue": "Incorrect content", "note": "The numeric GRPO item exactly matches Problem 9 (mean 0.5, std 0.5, A=+1.0, clipped surrogate 1.20), but Q1 hardcodes 'PPO (3 models)' as fact and its own answer admits ambiguity ('Accept B or note that B and C tie'); answer-key summary truncated."},
+    {"n": 8, "verdict": "Fail", "main_issue": "Exposed student answers", "note": "Student copy keeps all five questions, order and numbers, but every numeric answer is embedded in the boxed blanks as LaTeX \\phantom{0.5}/\\phantom{+1.0}/\\phantom{1.2} — invisible when rendered yet fully readable in the distributed source."},
+    {"n": 9, "verdict": "Fail", "main_issue": "Wrong source", "note": "Names the three files but attributes to the deck's slide 4 the 'policy, reference, reward, and critic' line its own turn-2 answer contradicted (the deck was only selected at this turn), and says the never-selected course outline was 'used only for context'."}
+  ],
+  "overall": "Fail",
+  "understanding": "Yes",
+  "source_use": "Partly",
+  "output_quality": "Partly",
+  "conversation_handling": "Yes",
+  "highlight": "PPO was taught as a 3-model method (critic omitted) and GRPO as 'drops the reward model' — both contradict the PA2 deck, which the harness never put in the selection until turn 9 — and the student quiz copy hides every numeric answer only inside LaTeX \\phantom{} markup."
+}

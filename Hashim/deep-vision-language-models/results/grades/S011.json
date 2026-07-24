@@ -1,0 +1,18 @@
+{
+  "scenario": "S011",
+  "turns": [
+    {"n": 1, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Strong lecture arc on the right file, but it teaches S_true = -eps/sigma^2 while the notes give -eps/sigma under x-tilde = x + sigma*eps, misstates ALD as alpha_i*S + sqrt(2*alpha_i)*Z (notes: (alpha_i/2)*S + sqrt(alpha_i)*Z per their own trap warning), and the generated quiz key computes alpha_i = 0.032 where eps_step*sigma_i^2/sigma_L^2 = 0.02*0.16/0.01 = 0.32."},
+    {"n": 2, "verdict": "Fail", "main_issue": "Incorrect content", "note": "The single board formula requested is delivered as -eps/sigma^2 = grad log p - wrong against the notes' -eps/sigma = (x - x-tilde)/sigma^2 and dimensionally inconsistent with its own stated forward process x-tilde = x + sigma*eps."},
+    {"n": 3, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "Noise-conditional S_theta(x-tilde, sigma) and the lambda(sigma)=sigma^2 balancing story are right, but the loss target is again written eps/sigma^2 and the annealed step-size connection (alpha_i = eps_step*sigma_i^2/sigma_L^2 shrinking toward sigma_L) never appears."},
+    {"n": 4, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Exactly four sections that visibly target the misconception, but the board carries -eps/sigma^2, the wrong ALD coefficients, and inverts the weighting rationale ('high noise gets lower weight' - lambda(sigma)=sigma^2 gives high noise the HIGHER weight)."},
+    {"n": 5, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Well-designed 3-minute pair check that preserves the four sections, but its teach-back correction asserts the scaling factor is 1/sigma^2 and the loss target eps/sigma^2 - the activity's checkable answer contradicts the notes' -eps/sigma."},
+    {"n": 6, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "Exactly three exit tickets, on-topic with a sensible rubric and no drift to DDPM/flow/VAE, but Q1's printed definition S_true = -eps/sigma^2 propagates the same wrong formula to students."},
+    {"n": 7, "verdict": "Pass", "main_issue": "None", "note": "Points to 05_ncsn_score_based_models_notes.pdf as primary reading with formula numbering (1-7) that matches the real file; the 'slides' framing is loose but no false source is claimed."}
+  ],
+  "overall": "Fail",
+  "understanding": "Yes",
+  "source_use": "Partly",
+  "output_quality": "Partly",
+  "conversation_handling": "Yes",
+  "highlight": "The pedagogy is excellent but the anchor formula is wrong in every turn: it teaches S_true = -eps/sigma^2 where the notes say -eps/sigma, rewrites the ALD update against the notes' own trap warning, and the quiz answer key computes alpha_i = 0.032 instead of 0.32."
+}

@@ -1,0 +1,17 @@
+{
+  "scenario": "S021",
+  "turns": [
+    {"n": 1, "verdict": "Pass", "main_issue": "None", "note": "Detects the self-revising prompt and states the last spec ('10 total, 6 focused on DDPM') with what the other 4 will cover, inviting correction; the generated quiz is fully grounded in the 06 notes (posterior variance, L_simple, SNR, Improved-DDPM interpolation all verify), though it floats score-based/flow-matching as the filler topics."},
+    {"n": 2, "verdict": "Fail", "main_issue": "Other", "note": "Verbally locks the right spec (10 = 6 DDPM + 4 DDIM) without re-asking, but the generate_assessment call leaks into the reply as raw XML and never executes - the existing artifact has only one true DDIM question - yet Fazah claims 'Done - the quiz is now on the card'."},
+    {"n": 3, "verdict": "Fail", "main_issue": "Other", "note": "'go' produces the same leaked, unexecuted generate call (params correct: 10 questions, 6 DDPM + 4 DDIM) plus a false 'Quiz generating now - ready in ~30 seconds'; no new generation or suggestion registers, so the 6/4 split was never delivered."},
+    {"n": 4, "verdict": "Fail", "main_issue": "Other", "note": "refine_assessment for the answer key leaks as raw text with refine=null - the edit never executes - while Fazah claims 'Done... ready to grade with'."},
+    {"n": 5, "verdict": "Fail", "main_issue": "Other", "note": "Never counts: after a leaked view call it claims 'the card is still building' (the turn-1 artifact completed long before) and restates the requested spec instead of verifying the actual questions; to its credit it flags the count as unverified rather than asserting it."},
+    {"n": 6, "verdict": "Fail", "main_issue": "Other", "note": "Student-version refine also leaks unexecuted, so the app-side quiz keeps its answer key despite 'Done - stripping the answer key now'; no answers leak into the reply itself, so no critical failure."}
+  ],
+  "overall": "Fail",
+  "understanding": "Yes",
+  "source_use": "Yes",
+  "output_quality": "Partly",
+  "conversation_handling": "Partly",
+  "highlight": "Contradiction handling was exactly right - it surfaced the self-revising counts, landed on 10 total / 6 DDPM, and locked 6+4 DDIM on confirmation - but from turn 2 onward every generate/refine call leaked into the reply as raw XML and never executed, so the confirmed 6/4 split, answer-key update, honest count, and student version were all claimed 'Done' without ever happening."
+}

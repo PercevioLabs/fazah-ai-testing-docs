@@ -1,0 +1,17 @@
+{
+  "scenario": "S026",
+  "turns": [
+    {"n": 1, "verdict": "Pass", "main_issue": "None", "note": "DDPM Markovian step, x-hat_0 prediction, DDIM master step-skip, and the DDIM sigma_t(eta) variance are all reproduced exactly as in the diffusion cheat sheet, with the stochastic-vs-controllable contrast stated correctly; source_mode file."},
+    {"n": 2, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "Core eta semantics are exactly right (eta=0 kills sigma_t and the z term, deterministic/ODE; eta=1 with t' = t-1 collapses to the DDPM step), but it adds ungrounded practice claims not in the notes ('the default eta ~ 0.5', eta=1 'takes longer to converge')."},
+    {"n": 3, "verdict": "Pass", "main_issue": "None", "note": "Correctly says set eta = 0, traces the why through the variance formula (sigma_t = 0 so z_t vanishes) matching the notes' deterministic-DDIM caveat; no invented DDPM-determinism claim."},
+    {"n": 4, "verdict": "Pass", "main_issue": "None", "note": "Turn text is only the intro line (question card body not captured in the API transcript), but Turns 5-6 confirm exactly four questions drawn from the DDPM/DDIM/eta thread, so the set was created on-topic."},
+    {"n": 5, "verdict": "Pass", "main_issue": "None", "note": "Only Q4 was rewritten, now asking eta=0 vs eta=1, and its answer matches the notes (eta=0 deterministic/ODE; eta=1 with t' = t-1 recovers the DDPM update); still four questions."},
+    {"n": 6, "verdict": "Pass", "main_issue": "None", "note": "Student copy has the four questions (including the edited Q4) with no answers — the sigma_t formula shown inside Q4 is question material, not an answer — and 06_diffusion_ddpm_ddim_notes.pdf is named as the sole source."}
+  ],
+  "overall": "Pass with small issue",
+  "understanding": "Yes",
+  "source_use": "Yes",
+  "output_quality": "Yes",
+  "conversation_handling": "Yes",
+  "highlight": "Every DDPM/DDIM formula and the eta boundary behavior matched the cheat sheet exactly across all six turns; the only blemish is Turn 2 padding the grounded answer with invented practice lore like 'the default eta ~ 0.5'."
+}

@@ -1,0 +1,198 @@
+{
+ "scenario": "S006",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [
+  "04_vae_denoising_autoencoders_notes.pdf"
+ ],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "explain tweedies formula from the selected notes",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 8.7,
+   "text": "## Tweedie's Formula: Bridging Score Matching & Denoising\n\n**Tweedie's Formula** is the mathematical link that lets you **use a learned score function to denoise noisy images back to the clean data manifold**.\n\n### The Core Idea\n\nWhen you have a noisy image $$\\tilde{x}$$, Tweedie's formula tells you the expected clean image is:\n\n$$E[x | \\tilde{x}] = \\tilde{x} + \\sigma^2 \\nabla \\log P(\\tilde{x})$$\n\nBreak this into three intuitive pieces:\n- **$$\\tilde{x}$$** = where you are right now (the noisy observation)\n- **$$\\nabla \\log P(\\tilde{x})$$** = the direction toward clean images (the **score vector**, or gradient of the log-density)\n- **$$\\sigma^2$$** = how big a step you take in that direction\n\n### Why It Matters\n\nIn a **standard Denoising Autoencoder (DAE)**, the network learns to **directly predict the clean image** $$x$$ from $$\\tilde{x}$$. But in **score matching**, the network instead learns the **score function** — the gradient of the log-probability. Tweedie's formula is the formula that recovers the clean image from that score, turning a score prediction into an actual denoising step.\n\n### The Intuition\n\nThink of it like a compass:\n- You're standing in a foggy forest (noisy image $$\\tilde{x}$$)\n- The score $$\\nabla \\log P(\\tilde{x})$$ points you toward the nearest village (clean data)\n- The variance $$\\sigma^2$$ controls how far you walk in that direction\n\nIf you take too small a step, you're still mostly in the fog. Take too large a step, you might walk past the village. Tweedie's formula balances this automatically.\n\n### Connection to the Notes\n\nYour notes frame this as **Combo B**: comparing a standard DAE (which predicts $$x$$ directly via MSE loss) versus a score-matching approach (which predicts the score, then applies Tweedie's formula). Both aim to denoise, but score matching sidesteps the need to train the network to output pixel values — it only learns gradients, which is often more stable.",
+   "source_mode": "file",
+   "follow_ups": [
+    "How does Tweedie's formula compare to the standard MSE approach?",
+    "When would you use score matching over a standard DAE?",
+    "Build a quiz on DAEs and score matching"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 2,
+   "prompt": "and the reparameterization trick, why do we need it",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 7.6,
+   "text": "## The Reparameterization Trick: Why We Need It\n\n### The Core Problem\n\nIn a **VAE**, the encoder outputs a distribution (mean $$\\mu_\\phi(x)$$ and variance $$\\sigma_\\phi(x)$$), and you need to **sample a latent vector $$z$$** from that distribution to pass to the decoder.\n\nThe naive approach looks like this:\n\n$$z \\sim \\mathcal{N}(\\mu_\\phi(x), \\sigma_\\phi^2(x))$$\n\n**But here's the problem:** sampling is a *stochastic operation* — it's random, not differentiable. You can't backpropagate gradients through randomness. If you try to train the encoder with standard gradient descent, the random sampling breaks the chain of derivatives.\n\n### The Solution: Reparameterize\n\nInstead of sampling directly from $$\\mathcal{N}(\\mu, \\sigma^2)$$, you **decouple the randomness from the network parameters**:\n\n$$z = \\mu_\\phi(x) + \\sigma_\\phi(x) \\odot \\epsilon, \\quad \\epsilon \\sim \\mathcal{N}(0, I)$$\n\nNow:\n- **$$\\epsilon$$** = pure random noise (sampled independently)\n- **$$\\mu_\\phi(x), \\sigma_\\phi(x)$$** = deterministic network outputs (differentiable!)\n- **$$\\odot$$** = element-wise multiplication\n\n### Why This Works\n\nBy moving the randomness *outside* the network and into a separate noise variable $$\\epsilon$$, you make the **entire operation differentiable with respect to the network parameters** $$\\phi$$:\n\n1. The encoder computes $$\\mu_\\phi(x)$$ and $$\\sigma_\\phi(x)$$ deterministically\n2. You sample $$\\epsilon$$ (random, but not a parameter)\n3. You compute $$z$$ as a deterministic combination of (1) and (2)\n4. Backpropagation flows through steps 1 and 3, updating $$\\phi$$\n\n**Without this trick:** gradients get stuck at the sampling operation, and the encoder never learns.\n\n### The Trade-off Intuition\n\nYour notes call this \"decoupling the random sampling from the network's deterministic parameters **so backpropagation can occur**.\" It's the difference between:\n- ❌ Sampling first, then asking \"how do I differentiate randomness?\"\n- ✅ Sampling independently, then asking \"how do I differentiate this deterministic arithmetic?\"\n\nThe reparameterization trick is why modern VAEs work at all — it's foundational to stochastic gradient descent on variational models.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "ok switching to the diffusion notes now — whats the closed-form forward jump",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf",
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 7.3,
+   "text": "## The Closed-Form Forward Jump: Direct Noise Addition\n\n### The Problem It Solves\n\nIn diffusion, you could add noise **one step at a time** (iteratively):\n\n$$x_t = \\sqrt{1 - \\beta_t} \\cdot x_{t-1} + \\sqrt{\\beta_t} \\cdot \\epsilon_t$$\n\nBut this is slow — if you have 1000 timesteps, you'd need 1000 sequential steps to reach a highly noisy image. During training, you'd waste computation.\n\n### The Solution: Jump Directly\n\nThe **closed-form forward jump** lets you **skip directly from the clean image $$x_0$$ to any arbitrary noisy timestep $$t$$** in one operation:\n\n$$x_t = \\sqrt{\\bar{\\alpha}_t} \\cdot x_0 + \\sqrt{1 - \\bar{\\alpha}_t} \\cdot \\epsilon_t$$\n\nwhere $$\\bar{\\alpha}_t = \\prod_{i=1}^{t} \\alpha_i$$ is the **cumulative signal retention** (product of all the $$\\alpha$$ values up to step $$t$$).\n\n### What This Means\n\n- **$$\\sqrt{\\bar{\\alpha}_t} \\cdot x_0$$** = how much of the original clean image remains (gets smaller as $$t$$ grows)\n- **$$\\sqrt{1 - \\bar{\\alpha}_t} \\cdot \\epsilon_t$$** = how much noise is mixed in (gets larger as $$t$$ grows)\n- **$$\\epsilon_t \\sim \\mathcal{N}(0, I)$$** = standard Gaussian noise (sample once, use once)\n\n### Why It's a Game Changer\n\n**During training:** Instead of iterating 1000 steps to corrupt an image, you:\n1. Sample a random timestep $$t$$\n2. Jump directly to $$x_t$$ using the closed form\n3. Train the denoising network to predict the noise $$\\epsilon_t$$\n\nThis is **massively faster** and lets you build the full training set in parallel.\n\n**In the notes:** The exam keywords emphasize \"jump from $$X_0$$ to $$X_t$$\" and \"arbitrary timestep\" — the whole point is that you can land at *any* timestep in one shot, not just the next one.\n\n### Key Insight from Your Notes\n\nThe closed form works because **the sum of independent Gaussians is also Gaussian** — the iterative corruption (many small noising steps) mathematically collapses into a single step with combined variance. That's the \"Reparameterization Trick\" caveats section: the product of alphas telescopes into $$\\bar{\\alpha}_t$$.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "the second file uses basically the same gaussian trick as the first one right?",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf",
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 7.0,
+   "text": "Yes, exactly right — **both files exploit the same core Gaussian property**, just in different contexts.\n\n### The Shared Trick\n\nBoth rely on this fundamental fact: **the sum of independent Gaussians is itself Gaussian.**\n\n### File 1 (VAE/DAE notes):\n\n**Reparameterization Trick** decouples randomness by writing:\n$$z = \\mu_\\phi(x) + \\sigma_\\phi(x) \\odot \\epsilon$$\n\nThis works because you're composing a deterministic shift ($$\\mu$$) with a scaled noise term ($$\\sigma \\cdot \\epsilon$$). The result is still Gaussian, so you get a differentiable sampling operation.\n\n### File 2 (Diffusion notes):\n\n**Closed-form forward jump** collapses many iterative noising steps into one:\n$$x_t = \\sqrt{\\bar{\\alpha}_t} \\cdot x_0 + \\sqrt{1 - \\bar{\\alpha}_t} \\cdot \\epsilon_t$$\n\nThis works because iteratively adding Gaussian noise (step 1: add noise, step 2: add more noise, ..., step t: add more noise) mathematically collapses into a *single* Gaussian with combined variance. Instead of computing that product sequentially, you jump straight there.\n\n### The Core Pattern\n\nBoth are saying: **\"I can express a complicated stochastic process as a simple Gaussian operation.\"**\n\n- VAE: A random sample from a learned distribution → deterministic arithmetic + one Gaussian sample\n- Diffusion: 1000 sequential noise additions → one direct jump using accumulated variance\n\nThe Gaussian family's **closure under affine transformations and convolution** is doing all the heavy lifting in both cases. It's elegant — and it's why both these methods are computationally tractable.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 5,
+   "prompt": "whats the snr formula in the second file",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf",
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 5.6,
+   "text": "## Signal-to-Noise Ratio (SNR) in Diffusion\n\nFrom your diffusion notes, the **SNR at timestep $$t$$** is:\n\n$$\\text{SNR}_t = \\frac{\\bar{\\alpha}_t}{1 - \\bar{\\alpha}_t}$$\n\n### What It Measures\n\n- **Numerator** $$\\bar{\\alpha}_t$$ = how much **signal** (original clean image) remains\n- **Denominator** $$1 - \\bar{\\alpha}_t$$ = how much **noise** has accumulated\n\nSo SNR is literally the **ratio of data to noise** at that timestep.\n\n### Intuition\n\n- **Early in diffusion** ($$t$$ small): $$\\bar{\\alpha}_t \\approx 1$$, so SNR is **high** — mostly clean image, very little noise\n- **Late in diffusion** ($$t$$ large): $$\\bar{\\alpha}_t \\approx 0$$, so SNR is **low** — mostly noise, almost no signal\n- **At the end** ($$t \\to \\infty$$): $$\\bar{\\alpha}_t \\to 0$$, so SNR $$\\to 0$$ — pure Gaussian noise\n\n### Why It Matters in Exams\n\nYour notes list it under \"Core Parameters & Schedules — Calculate these first.\" The SNR tells you:\n- **How hard** the denoising task is at each step (low SNR = harder)\n- **How to weight** the training loss differently at different timesteps\n- Whether you're in the **easy regime** (high SNR, remove a little noise) or the **hard regime** (low SNR, extract signal from pure noise)\n\nIt's a quick diagnostic: if you're debugging why your diffusion model fails at certain timesteps, checking the SNR curve tells you where the model is struggling most.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "one more from the first file — whats in the elbo, the two pieces",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf",
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 6.4,
+   "text": "## The Master ELBO: Two Pieces\n\nFrom your VAE notes, the **negative ELBO** (the loss you minimize) has two terms:\n\n$$-\\mathcal{L}_{\\text{ELBO}}(\\phi, \\theta) = -E_q[\\log P_\\theta(x|z)] + D_{\\text{KL}}(q_\\phi(z|x) \\parallel P_\\theta(z))$$\n\n### Piece 1: Reconstruction Loss\n$$-E_q[\\log P_\\theta(x|z)]$$\n\nThis says: **\"Given a latent code $$z$$, how well can the decoder reconstruct the original image $$x$$?\"**\n\n- If the decoder is bad at reconstructing, this term is **large** (high loss)\n- If the decoder is good, this term is **small**\n- It **pulls the latent space toward useful representations** — ones that help decode back to the data\n\n**Intuition:** Don't lose information; keep the latent code informative.\n\n### Piece 2: KL Divergence (Regularization)\n$$D_{\\text{KL}}(q_\\phi(z|x) \\parallel P_\\theta(z))$$\n\nThis says: **\"How far is the encoder's latent distribution from the prior $$P(z) = \\mathcal{N}(0, I)$$?\"**\n\n- If the encoder outputs are **far from the prior**, this term is **large** (high loss)\n- If they're **close to the prior**, this term is **small**\n- It **pushes the latent space toward a standard Gaussian** — keeping it regular and smooth\n\n**Intuition:** Don't overfit; keep the latent space well-behaved and generalisable.\n\n### The Trade-off\n\nThe ELBO balances two competing goals:\n- **Reconstruction**: Make latent codes useful for decoding\n- **Regularization**: Keep latent codes from drifting too far into weird regions\n\nIf you only minimized reconstruction, the encoder would ignore the prior and learn arbitrary codes. If you only minimized KL, the latent space would collapse to noise (Posterior Collapse, Equation 2.5). The ELBO forces both to coexist.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 7,
+   "prompt": "make 4 quiz questions w/ answers, 2 from each file, label which file each is from",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf",
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 12.9,
+   "text": "Here's a 4-question quiz covering both files — 2 on VAEs/DAEs and 2 on diffusion. Each includes the answer.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 8,
+   "prompt": "now the student version, no answers and no file labels",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf",
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 3.3,
+   "text": "```\n1. What does Tweedie's formula allow you to recover from a learned score function, and what are the three intuitive components of the formula?\n\n2. Explain why the reparameterization trick is necessary in VAE training. What problem does it solve, and how does it solve it?\n\n3. Write the closed-form expression for jumping directly from a clean image x₀ to a noisy image at arbitrary timestep t in diffusion. What do each of the two main terms represent?\n\n4. The VAE loss (ELBO) contains two competing terms. Describe what each term incentivizes the model to do, and why both are necessary.\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  }
+ ]
+}

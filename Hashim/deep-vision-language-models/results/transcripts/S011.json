@@ -1,0 +1,286 @@
+{
+ "scenario": "S011",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "half my class thinks score matching is just denoising, how do i untangle that in one lecture",
+   "selection": [
+    "05_ncsn_score_based_models_notes.pdf"
+   ],
+   "latency_s": 21.4,
+   "text": "That's a really common collision — they're related but not the same, and the cheat sheet actually gives you the perfect teaching moves to clarify it. Here's a one-lecture untangling:\n\n## The Core Distinction\n\n**Denoising** is a *task* (predict a cleaner version of noisy data). **Score matching** is a *training objective* (learn to estimate the gradient of the log-probability). A score-based model *uses* denoising as its supervision signal, but the goal underneath is different.\n\n## The Teaching Arc (fits one 45–50 min lecture)\n\n### 1. Start with What They Know: The Denoising Intuition (10 min)\nShow them the **forward process** from the cheat sheet:\n$$\\tilde{x} = x + \\sigma\\epsilon$$\n\n\"You add noise to a clean image. A denoising network tries to predict the clean original or strip away the noise. Feels simple — and it IS, as a task.\" Let them sit with that.\n\n### 2. The Plot Twist: What Score Matching *Really* Asks (10 min)\nNow show the **True Score** formula:\n$$S_{\\text{true}}(\\tilde{x} | x) = -\\frac{\\epsilon}{\\sigma^2}$$\n\nStop here. **Rewrite it as a gradient:**\n$$S_{\\text{true}} = -\\frac{\\epsilon}{\\sigma^2} = \\nabla_{\\tilde{x}} \\log p(\\tilde{x})$$\n\nKey line: *\"We are NOT predicting the noise or the clean image. We are predicting the **direction and magnitude that points back toward high-probability regions**. That direction IS the score — the gradient of the log-likelihood.\"*\n\nDraw a 2D toy example: a Gaussian distribution, a point in the tail, and the gradient vector pointing toward the mean. The score is that arrow, not the data itself.\n\n### 3. Why Denoising Supervision *Works* for Score Matching (15 min)\nThis is the revelation. Show them the cheat sheet's **Unweighted Loss**:\n$$\\text{Loss} = \\frac{1}{2}\\|S_\\theta(\\tilde{x}, \\sigma) - \\epsilon\\|_2^2$$\n\nSay: *\"Here's the magic: if the network learns to predict the noise* $\\epsilon$ *that was added, it has* implicitly *learned the score, because the score IS proportional to the noise. Predicting* $\\epsilon / \\sigma^2$ *is the same as learning* $\\nabla \\log p$.\"*\n\nWrite out why:\n- The true score points in the direction of $-\\epsilon$ (back to clean data).\n- A network trained to predict $\\epsilon$ learns that same direction.\n- So denoising-as-supervision tricks the network into learning the score without ever explicitly computing log-probabilities.\n\n**Analogy**: \"Imagine you're lost in a fog (high-noise state) and want to find your way home (the clean data). A denoising network learns to predict which direction home is. A score-matching network learns the *gradient* — how steep the terrain slopes toward home. They're the same direction, but different framings.\"\n\n### 4. Where They Diverge in Practice (10 min)\nShow them the **ALD sampling rule** from the cheat sheet:\n$$\\tilde{x}_{t} = \\tilde{x}_{t-1} + \\alpha_i S_\\theta(\\tilde{x}_{t-1}, \\sigma_i) + \\sqrt{2\\alpha_i} Z_t$$\n\nPoint out: *\"Here, we use the score* $S_\\theta$ *directly to update the image. We're not denoising at each step — we're doing a gradient ascent in the log-probability space, with noise injection (Langevin dynamics) to avoid getting stuck.\"*\n\nContrast: \"If you just trained a denoising network and ran it iteratively on the output, that's not the same sampling algorithm. The math works out differently.\"\n\n### 5. Close with the Conversion Formula (5 min)\nShow the **DDPM-to-NCSN conversion**:\n$$S_\\theta(x_t, t) = -\\frac{\\epsilon_\\theta(x_t, t)}{\\sqrt{1 - \\bar\\alpha_t}}$$\n\nSay: *\"This is the final proof. A DDPM model (trained to predict noise) and an NCSN model (trained to predict scores) can represent the same learned distribution, just in different parameterizations. But the* sampling *algorithms are different because the objectives encode different information.\"*\n\n## Exam Question to Cement It\n\nGive them this on a pop quiz or homework:\n\n*\"A student trains a network to predict the noise added in a diffusion process. Another trains a network to predict the score (gradient of log-likelihood). Are they learning the same thing? Explain your answer in terms of the forward process and why one objective can supervise the other.\"*\n\nExpected answer hints:\n- Yes, they can be equivalent because the score is proportional to $-\\epsilon / \\sigma^2$.\n- The denoising objective indirectly supervises score learning.\n- BUT the sampling algorithm (ALD) uses the score directly in a gradient update, whereas repeated denoising is a different iterative process.\n\n---\n\nThe cheat sheet is your secret weapon here — every formula and \"when to use it\" note is designed to keep these concepts separate. Lean on it.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Deep dive: why ALD sampling differs from iterative denoising",
+    "Worked problems on the score conversion formula",
+    "A visual: how gradients point toward high-probability regions"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": [
+    {
+     "title": "Score Matching vs. Denoising: Clarification Quiz",
+     "type": "assessment",
+     "params": {
+      "topic": "Score Matching vs. Denoising (NCSN Conceptual Clarity)",
+      "assessment_type": "quiz",
+      "question_count": 8,
+      "question_types": [
+       "mcq",
+       "short_answer"
+      ],
+      "language": "en",
+      "level": "advanced",
+      "additional_instructions": "Ground all questions in the NCSN cheat sheet (formulas 1–7). Include: the forward process, the true score formula, why denoising loss supervises score learning, the ALD update rule, and the DDPM-to-NCSN conversion. Emphasize the conceptual gap between the task (denoising) and the objective (score matching)."
+     }
+    }
+   ],
+   "artifact": {
+    "assessment_id": "c331d973-aca5-4635-903a-f712ba0a9bdc",
+    "status": "completed",
+    "latency_s": 53.1,
+    "title": "AI623 Quiz: NCSN Score Matching and Denoising Fundamentals",
+    "question_total": 8,
+    "marks_total": 40,
+    "types": [
+     "mcq",
+     "short_answer"
+    ],
+    "questions": [
+     {
+      "n": 1,
+      "type": "mcq",
+      "marks": 5,
+      "text": "Which formula correctly represents the forward process (noise injection) in NCSN?"
+     },
+     {
+      "n": 2,
+      "type": "mcq",
+      "marks": 5,
+      "text": "What is the true score vector \\(S_{\\text{true}}(\\tilde{x} \\mid x)\\) designed to represent?"
+     },
+     {
+      "n": 3,
+      "type": "mcq",
+      "marks": 5,
+      "text": "In the weighted NCSN objective, why is the loss weighted by \\(\\lambda(\\sigma) = \\sigma^2\\)?"
+     },
+     {
+      "n": 4,
+      "type": "mcq",
+      "marks": 5,
+      "text": "Which statement best explains the conceptual gap between the denoising task and the score-matching objective in NCSN?"
+     },
+     {
+      "n": 5,
+      "type": "mcq",
+      "marks": 5,
+      "text": "Given the DDPM noise prediction formula \\(S_\\theta(x_t, t) = -\\frac{\\epsilon_\\theta(x_t, t)}{\\sqrt{1 - \\bar{\\alpha}_t}}\\), which of the following correctly interprets this conversion in the context of NCSN?"
+     },
+     {
+      "n": 6,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "You are given a clean data point \\(x = [1.0, 2.0, 3.0]\\), a noise level \\(\\sigma = 0.5\\), and a sampled noise vector \\(\\epsilon = [0.1, -0.2, 0.3]\\). Using Formula 1 (the forward process), calculate the perturbed data point \\(\\tilde{x}\\)."
+     },
+     {
+      "n": 7,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "Compute the ALD step size \\(\\alpha_i\\) given: base step-size hyperparameter \\(\\epsilon_{\\text{step}} = 0.02\\), current noise level variance \\(\\sigma_i^2 = 0.16\\), and final noise level variance \\(\\sigma_L^2 = 0.01\\). Show all steps."
+     },
+     {
+      "n": 8,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "Explain the relationship between the true score formula \\(S_{\\text{true}}(\\tilde{x} \\mid x) = -\\frac{\\epsilon}{\\sigma^2}\\) and the unweighted NCSN loss \\(\\text{Loss} = \\frac{1}{2} \\| S_\\theta(\\tilde{x}, \\sigma) - S_{\\text{true}}(\\tilde{x}) \\|^2\\). Why does minimizing prediction error on the score indirectly enable the network to perform effective denoising?"
+     }
+    ],
+    "answer_key": [
+     {
+      "n": 1,
+      "answer": "A"
+     },
+     {
+      "n": 2,
+      "answer": "A"
+     },
+     {
+      "n": 3,
+      "answer": "A"
+     },
+     {
+      "n": 4,
+      "answer": "A"
+     },
+     {
+      "n": 5,
+      "answer": "A"
+     },
+     {
+      "n": 6,
+      "answer": "\\(\\tilde{x} = [1.05, 1.90, 3.15]\\)"
+     },
+     {
+      "n": 7,
+      "answer": "\\(\\alpha_i = 0.032\\)"
+     },
+     {
+      "n": 8,
+      "answer": "The true score \\(S_{\\text{true}}(\\tilde{x} \\mid x) = -\\frac{\\epsilon}{\\sigma^2}\\) encodes the direction and magnitude of the noise that was injected. When the network learns to predict this score accurately via the unweighted loss, it learns to estimate the gradient of the log probability at each no"
+     }
+    ]
+   }
+  },
+  {
+   "n": 2,
+   "prompt": "ok whats the one formula i can put on the board that makes the difference obvious",
+   "selection": [
+    "05_ncsn_score_based_models_notes.pdf"
+   ],
+   "latency_s": 9.8,
+   "text": "This one:\n\n$$S_{\\text{true}}(\\tilde{x} \\mid x) = -\\frac{\\epsilon}{\\sigma^2} = \\nabla_{\\tilde{x}} \\log p(\\tilde{x})$$\n\nWrite it **exactly like that** — left side is what you predict (the score), middle is the noise parameterization, right side is what it *means* (a gradient).\n\nThen below it write:\n\n**Denoising:** predict $\\epsilon$  \n**Score Matching:** predict $\\nabla \\log p$ (which *is* proportional to $-\\epsilon/\\sigma^2$)\n\nOne arrow, one equals sign, one insight: *they're the same direction, different framings.*\n\nThat's it. Everything else in the lecture hangs off that equation.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "and how do i explain why we need multiple noise levels, they always ask that",
+   "selection": [
+    "05_ncsn_score_based_models_notes.pdf"
+   ],
+   "latency_s": 5.9,
+   "text": "Put this on the board next to the score formula:\n\n$$S_\\theta(\\tilde{x}, \\sigma) \\text{ — the score depends on } \\sigma$$\n\nThen say:\n\n*\"At high noise, the score is shallow and noisy — the direction back to clean data is fuzzy. At low noise, the score is sharp and precise. A single network can't learn both well. So we train it on* **all noise levels at once**, *with the weighted loss balancing how much we care about each one:\"*\n\n$$L(\\theta) = \\mathbb{E}_\\sigma\\left[\\sigma^2 \\left\\|S_\\theta(\\tilde{x}, \\sigma) - \\frac{\\epsilon}{\\sigma^2}\\right\\|_2^2\\right]$$\n\nKey line: *\"The network learns a* noise-conditional *function — it takes both the noisy image* AND *the noise level as input, and outputs the right direction for that specific noise level. That's why it's called a* **Noise-Conditional Score Network**.\"*\n\n**Analogy** (if they're still blank): \"It's like learning to navigate in different fog densities. In thick fog you take small cautious steps in the general direction. In clear weather you stride confidently. Same network, different behavior conditioned on how much noise there is.\"\n\nThe cheat sheet calls this out in Formula 4 — the weighting factor $\\lambda(\\sigma) = \\sigma^2$ *exists precisely because different noise levels need different supervision strength*. That's your answer: **without it, the network would overfit to one noise level and ignore the others.**",
+   "source_mode": "none",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "gimme a board plan for the lecture, like 4 sections",
+   "selection": [
+    "05_ncsn_score_based_models_notes.pdf"
+   ],
+   "latency_s": 17.2,
+   "text": "```\nLECTURE BOARD PLAN: Score Matching vs. Denoising (45 min)\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nSECTION 1: THE FORWARD PROCESS (10 min)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nTitle: What noise injection looks like\n\nWrite:\n  x̃ = x + σϵ,  where ϵ ~ N(0, I)\n\nDraw: one clean image x → arrow labeled σϵ → noisy image x̃\n\nAsk the room: \"What do we have here?\" \n(Get: a clean image, add noise, get a corrupted version)\n\nSay: \"Denoising task: given x̃, predict x or predict ϵ. Easy to understand.\"\n\nCheckpoint: Everyone nods. They think they know what's coming.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nSECTION 2: THE PLOT TWIST — SCORE IS NOT NOISE (12 min)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nTitle: What are we actually training?\n\nWrite the magic formula:\n  S_true(x̃ | x) = -ϵ/σ² = ∇_{x̃} log p(x̃)\n\nUnderline the equals signs.\n\nSay slowly: \"This is not the noise. This is the SCORE—the gradient of the \nlog-probability. But it's PROPORTIONAL to the noise.\"\n\nDraw a 2D Gaussian:\n  - Draw the distribution as a blob\n  - Pick a point in the tail\n  - Draw an arrow pointing toward the mean (labeled \"score = ∇log p\")\n  - Say: \"This arrow IS the score. It points toward high-probability regions.\"\n\nKey line on board:\n  Denoising: predict ϵ\n  Score matching: predict ∇log p  (which = -ϵ/σ²)\n\nSay: \"Same direction. Different *meaning*. That's the whole game.\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nSECTION 3: WHY MULTIPLE NOISE LEVELS (12 min)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nTitle: One network can't learn everything\n\nWrite:\n  S_θ(x̃, σ) ← the score depends on σ\n\nSay: \"The network takes BOTH the noisy image AND the noise level. Why?\"\n\nDraw a vertical axis labeled σ (high to low) and alongside it draw \n3–4 rough score fields:\n  σ = high (σ²=1.0)   : rough, noisy field\n  σ = medium (σ²=0.1) : sharper field\n  σ = low (σ²=0.01)   : very sharp, precise field\n\nSay: \"At high noise, the true score is shallow and fuzzy. At low noise, \nit's sharp and precise. One network cannot learn both if you only show it \none noise level.\"\n\nWrite the weighted loss:\n  L(θ) = σ² ||S_θ(x̃, σ) - ϵ/σ²||²\n\nSay: \"The weight σ² balances the contribution. High noise gets lower weight \n(it's harder to learn), low noise gets higher weight (it matters more for \ngeneration).\"\n\nAnalogy: \"Navigating in thick fog vs. clear weather. Same network, but you \ntrain it to handle both.\"\n\nKey takeaway on board:\n  \"Noise-Conditional\" = the network's behavior changes with σ\n  Multiple σ in training = learn the score field at every noise level\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nSECTION 4: HOW WE USE IT — SAMPLING (11 min)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nTitle: Score vs. Denoising in practice\n\nWrite the ALD update:\n  x̃_t = x̃_{t-1} + α_i S_θ(x̃_{t-1}, σ_i) + √(2α_i) Z_t\n\nSay: \"At each step, we move along the score (the gradient) and add a little \nnoise. We're doing Langevin dynamics—gradient ascent in log-probability space.\"\n\nContrast on board:\n  DENOISING: x̃_t ← DENOISE(x̃_{t-1})  [magic black box]\n  SCORE:     x̃_t ← x̃_{t-1} + α·∇log p + noise  [explicit gradient step]\n\nSay: \"Both can work. But only the score formula lets us control the step size \nα and inject fresh noise at each step. That's why NCSN uses the score directly.\"\n\nOptional (if time): Show DDPM-to-NCSN conversion:\n  S_θ = -ϵ_θ / √(1 - ᾱ_t)\n\nSay: \"Even DDPM (which trains on noise) can be converted to a score. The \nparameterizations are equivalent, but the sampling algorithm is different.\"\n\nFinal checkpoint on board:\n  ✓ Score = direction of increasing likelihood\n  ✓ Denoising supervision trains the score\n  ✓ Multiple σ levels = network learns the full score field\n  ✓ Sampling: explicit gradient steps using the learned score\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n```\n\n**Timing notes:**\n- Sections 1–2 are the conceptual hook (22 min). Don't rush.\n- Section 3 answers the \"why multiple σ\" question directly (12 min).\n- Section 4 ties it to what they actually *do* with the network (11 min).\n- Leave ~5 min for questions/clarification.\n\n**The one thing to emphasize throughout:** Write the equals sign $-\\epsilon/\\sigma^2 = \\nabla \\log p$ at least 3 times. That's the insight that unlocks the whole thing.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 5,
+   "prompt": "add a quick misconception check the students can do in pairs",
+   "selection": [
+    "05_ncsn_score_based_models_notes.pdf"
+   ],
+   "latency_s": 10.5,
+   "text": "Add this to the end of **SECTION 2**, right after you write the magic formula:\n\n```\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nPAIR CHECK (3 min) — Catch the misconception NOW\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nWrite on board:\n\n  Question: If S_θ predicts the score ∇log p, and ∇log p ∝ -ϵ/σ²,\n  does that mean S_θ directly outputs the noise ϵ?\n  \n  A) Yes, they are the same thing\n  B) No, the score is proportional to noise but not identical\n  C) It depends on the noise schedule\n\nTurn to class: \"Talk to the person next to you. 30 seconds. Go.\"\n\n[Wait 40 seconds. Let them argue.]\n\nCall back: \"Hands up if you said A?\"\n[They will. That's the trap.]\n\nSay: \"Here's the trick. The score IS proportional to -ϵ/σ². But 'proportional' \nmeans there's a scaling factor. What's the scaling factor?\"\n\n[Point at the formula on the board.]\n\n\"It's 1/σ². So if the network predicts ϵ directly, it would be off by a \nfactor of σ². That matters. The score encodes both direction AND magnitude \nwith respect to the probability space, not just the noise space.\"\n\nWrite the correction:\n  S_θ outputs:  -ϵ/σ²  (the score, scaled for probability)\n  NOT:          ϵ      (the raw noise)\n  \nThis is why in the loss we write:\n  ||S_θ - ϵ/σ²||²\n  \n  not ||S_θ - ϵ||²\n\nKey line: \"The network learns to predict a scaled, normalized gradient. \nThat's different from just predicting noise.\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n```\n\n**Why this works:**\n- It's **fast** (3 min total — they do the thinking, not you lecturing at them).\n- It **catches the exact misconception** that leads to \"score matching = denoising.\"\n- The **pair structure** gives them permission to say \"I'm not sure\" without raising their hand.\n- You **reveal the trap** immediately so they remember it — no lingering confusion.\n- The **correction is concrete**: one scaling factor, one formula, one line of intuition.\n\n**Optional:** After the pair check, you can add to your cheat-sheet notes:\n\n> **Trap Warning:** Do NOT confuse S_θ (the score) with ϵ (the noise). They are \n> proportional, but the score includes the 1/σ² scaling factor. The loss \n> matches the network's output to ϵ/σ², not to ϵ alone.\n\nStudents will reference this during homework and exams.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "make 3 exit ticket questions on this",
+   "selection": [
+    "05_ncsn_score_based_models_notes.pdf"
+   ],
+   "latency_s": 11.0,
+   "text": "```\nEXIT TICKET: Score Matching vs. Denoising\n(3 questions · 5 min · individual)\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nQ1: CONCEPTUAL (1–2 sentences)\n\n  The true score is defined as S_true(x̃|x) = -ϵ/σ².\n  \n  What does this formula represent, and why is it called a \"score\"?\n  \n  ──────────────────────────────────────────────────────────────\n  \n  [Space for answer]\n\n\nQ2: MISCONCEPTION TRAP (multiple choice)\n\n  A network trained on the denoising loss ||S_θ(x̃, σ) - ϵ/σ²||² learns to \n  predict the noise ϵ directly.\n  \n  ☐ True\n  ☐ False\n  \n  Briefly explain why (one sentence).\n  \n  ──────────────────────────────────────────────────────────────\n  \n  [Space for answer]\n\n\nQ3: APPLICATION (one formula + one sentence)\n\n  Write down the ALD sampling update rule. Then explain in one sentence \n  why we use the score directly in this formula instead of just running \n  a denoising network repeatedly.\n  \n  ──────────────────────────────────────────────────────────────\n  \n  [Space for formula]\n  \n  [Space for explanation]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n```\n\n**Grading rubric (for you, not for students):**\n\n| Q | Full credit | Partial | No credit |\n|---|---|---|---|\n| **Q1** | Names it as gradient of log-likelihood / direction toward high probability OR says \"direction back to clean data\" | Says \"related to the noise\" but vague on the gradient aspect | Says \"predicts noise\" or blank |\n| **Q2** | **False** + explains the 1/σ² scaling factor matters OR says \"the loss targets ϵ/σ², not ϵ\" | Says False but explanation is unclear or incomplete | Says True, or False with no reasoning |\n| **Q3** | Writes correct ALD formula + explains explicit gradient step allows controlled step size α OR says \"denoising is a black box, score uses actual gradient\" | Writes formula with minor error + weak explanation | Formula missing/wrong or no explanation |\n\n**What to look for (red flags):**\n- Q1: If they say \"the noise\" instead of \"the gradient,\" they still have the misconception.\n- Q2: If they say True, they didn't internalize the pair check — flag for follow-up.\n- Q3: If they write the denoising update instead of ALD, they're not seeing the difference yet.\n\n**What to do with results:**\n- **All 3 solid?** They got it. Move on.\n- **Q1 or Q2 shaky?** Brief 2-min clarification before next lecture, or add a worked example to homework.\n- **Q3 blank/wrong?** They need the sampling algorithm explained again — consider a 5-min recap or a worked ALD step in next lecture's opening.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Run a 1-question quick poll",
+    "Reteach the part they found hard",
+    "Explain a concept to the class",
+    "Recap today's class for absent students",
+    "Review the questions"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 7,
+   "prompt": "which notes should i tell them to read for this",
+   "selection": [
+    "05_ncsn_score_based_models_notes.pdf"
+   ],
+   "latency_s": 5.8,
+   "text": "Tell them:\n\n**Before class:** Read **05_ncsn_score_based_models_notes.pdf** — specifically Slides 1–2 (Formulas 1–4: Forward Process, True Score, Unweighted Loss, Weighted Loss). You only need 10 minutes. Focus on the \"When to use it\" sections and the Trap Warnings — those are the gotchas we're untangling in lecture.\n\n**After class (to cement it):** Re-read Slides 2–3 (Formulas 3–6: the losses and ALD update). The pair check will make more sense now. Try working through the ALD formula step-by-step with the numbers from your notes.\n\n**If they're still confused after lecture:** Slide 4 (Formula 7: DDPM-to-NCSN conversion) shows that even DDPM networks implicitly learn scores. That's optional but powerful for the \"why does this matter?\" question.\n\n---\n\n**One line to add to your syllabus or assignment:**\n\n> *The cheat sheet is your reference. The formulas are there so you don't memorize — use them to understand* why *denoising trains a score, not just what the score is.*\n\nThat frames it as a tool, not busywork. They'll actually use it.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  }
+ ]
+}

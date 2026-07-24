@@ -1,0 +1,146 @@
+{
+ "scenario": "S023",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [
+  "01_dvlm_introduction.pptx"
+ ],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "whats the difference between an LLM, a VLM and an MLLM? short definitions pls",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 4.1,
+   "text": "From your course introduction:\n\n**LLM (Large Language Model):** A large model trained primarily on language — understands and generates text.\n\n**VLM (Vision Language Model):** An LLM with a vision encoder added, so it understands language and images, and generates text.\n\n**MLLM (Multimodal Large Language Model):** A more general model built to process, understand, and generate across multiple modalities — text, images, video, and audio.\n\nIn short: LLM is text-only → VLM adds vision → MLLM is the broadest, handling many modalities at once.",
+   "source_mode": "file",
+   "follow_ups": [
+    "How do vision encoders work in VLMs?",
+    "Build a quiz on these definitions",
+    "Explain multimodal reasoning"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 2,
+   "prompt": "so can a VLM generate images?",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 2.9,
+   "text": "No — according to your course definition, a VLM can **understand** both language and images, but it only **generates text**.\n\nA VLM is fundamentally an LLM (text generator) with a vision encoder bolted on. The encoder lets it *read* images, but the output layer still produces text only.\n\nAn MLLM, being more general, *could* be designed to generate images (or video, audio, etc.), but that depends on its architecture — not all MLLMs do.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "turn the definitions into a table",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 1.9,
+   "text": "```markdown\n| Model Type | Training Focus | Input Modalities | Output Modality |\n|---|---|---|---|\n| LLM | Language | Text | Text |\n| VLM | Language + Vision | Text, Images | Text |\n| MLLM | Multiple modalities | Text, Images, Video, Audio | Text, Images, Video, Audio |\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "make a matching exercise from this — terms on one side, descriptions on the other",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 2.4,
+   "text": "```markdown\n# Matching Exercise: LLM, VLM, MLLM\n\n**Column A (Terms)**\n1. LLM\n2. VLM\n3. MLLM\n\n**Column B (Descriptions)**\nA. A large model trained primarily on language; understands and generates text only.\n\nB. An LLM with a vision encoder; understands language and images, generates text.\n\nC. A generalist model built to process, understand, and generate across multiple modalities: text, images, video, and audio.\n\n---\n\n**Answer Key:** 1–A, 2–B, 3–C\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 5,
+   "prompt": "gimme the answer key for the matching",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 1.5,
+   "text": "```\n1 → A\n2 → B\n3 → C\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "which file did all this come from",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 1.8,
+   "text": "**01_dvlm_introduction.pptx** — specifically Slide 2, where the course welcome and definitions are laid out.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  }
+ ]
+}

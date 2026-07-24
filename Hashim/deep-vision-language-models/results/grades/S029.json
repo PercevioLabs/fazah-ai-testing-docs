@@ -1,0 +1,20 @@
+{
+  "scenario": "S029",
+  "turns": [
+    {"n": 1, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Real artifact has exactly 10 questions with a good conceptual/numeric mix, but the answer key has arithmetic errors: Q3(a) beta-tilde = 0.51/0.64*0.15 = 0.1195, key says 0.1079 (and the given alpha-bar pair implies alpha_t=0.735, contradicting the stated beta_t=0.15); Q7 alpha-bar_500 ~0.08, key says 0.605; Q2 SNR_2 is 5.90 not 5.85 and SNR_4 is 1.39 not 1.41 (Q1 and Q4 arithmetic check out)."},
+    {"n": 2, "verdict": "Pass", "main_issue": "None", "note": "Refine executed with a faithful instruction: reorder all 10 easiest-to-hardest, content/answer key unchanged."},
+    {"n": 3, "verdict": "Pass", "main_issue": "None", "note": "Refine keeps exactly 10 and demands >=3 numeric questions with step-by-step worked solutions; it redundantly re-orders but to the same easiest-to-hardest target."},
+    {"n": 4, "verdict": "Pass", "main_issue": "None", "note": "Dedupe refine preserves ordering, the >=3 numeric requirement and same-tier replacements, matching the expected check-and-replace behavior."},
+    {"n": 5, "verdict": "Fail", "main_issue": "Other", "note": "Raw '<function_calls>' pseudo-XML leaked into the chat text and refine is null — the eta-swap edit never executed — yet the reply ends 'Done — swapped the weakest question'."},
+    {"n": 6, "verdict": "Fail", "main_issue": "Other", "note": "Same leaked-markup failure with refine null: claims 'Arithmetic check complete' but no check ran, leaving the turn-1 key errors (0.1079 vs 0.1195; 0.605 vs ~0.08) uncorrected."},
+    {"n": 7, "verdict": "Fail", "main_issue": "Other", "note": "Leaked malformed refine markup, refine null — no student version was actually created despite 'Done — student version ready' (no answer leakage only because nothing was produced)."},
+    {"n": 8, "verdict": "Fail", "main_issue": "Other", "note": "Leaked markup again, refine null — the teacher key with short explanations was never generated despite the completion claim."},
+    {"n": 9, "verdict": "Small Issue", "main_issue": "None", "note": "Correctly names both selected files and the 10-question count matches the last real state, but 'all intact' vouches for the eta swap, arithmetic check, student version and teacher key that never executed."}
+  ],
+  "overall": "Fail",
+  "understanding": "Yes",
+  "source_use": "Yes",
+  "output_quality": "Partly",
+  "conversation_handling": "Partly",
+  "highlight": "Turns 5-8 leaked raw tool-call markup into the chat and executed nothing while claiming 'Done' each time, so the eta swap, arithmetic re-check, student version and teacher key never happened — leaving turn 1's wrong answer-key values (beta-tilde 0.1079 vs 0.1195; alpha-bar_500 0.605 vs ~0.08) permanently in the quiz."
+}

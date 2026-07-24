@@ -1,0 +1,17 @@
+{
+  "scenario": "S009",
+  "turns": [
+    {"n": 1, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "DDIM essentials right (x-hat_0, step-skipping, eta=0 deterministic ODE, collapse to DDPM at t'=t-1 with eta=1) but sigma_t is printed with the second ratio inverted (1 - alpha-bar_t'/alpha-bar_t, which is negative for t>t'; notes give 1 - alpha-bar_t/alpha-bar_t')."},
+    {"n": 2, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "Eta behavior all correct (eta=0 makes sigma_t=0, z_t vanishes, reversible ODE; eta=1 approaches DDPM) but repeats the same inverted sigma_t ratio from Turn 1."},
+    {"n": 3, "verdict": "Pass", "main_issue": "None", "note": "DDPM one-step Markovian formula matches the notes exactly, collapse condition (t'=t-1, eta=1) stated, and the thread from turns 1-2 is continued without restart."},
+    {"n": 4, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "10-question quiz well grounded in the notes' exam keywords (collapse condition, ODE solver, boundary conditions, reparameterization), but Q3 inverts the first sigma_t ratio and Q9 misquotes the DDPM step as X_t - eps/sqrt(1-alpha-bar_t) + sigma z (drops the 1/sqrt(alpha_t) prefactor and (1-alpha_t) coefficient)."},
+    {"n": 5, "verdict": "Pass", "main_issue": "None", "note": "Refine targets the correct assessment, keeps the same topic and 10 questions while raising difficulty - exactly what 'harder' asked."},
+    {"n": 6, "verdict": "Pass", "main_issue": "None", "note": "Answer key covers all 10 questions without altering them; eta=0 gives sigma_t=0, the eta=1/no-skip collapse, and X_T ~ N(0,I) boundary answers all agree with the notes (key reflects the pre-refine quiz, acceptable under the one-generation cap)."}
+  ],
+  "overall": "Pass with small issue",
+  "understanding": "Yes",
+  "source_use": "Yes",
+  "output_quality": "Partly",
+  "conversation_handling": "Yes",
+  "highlight": "One-word prompts (ddim? / eta? / harder / answers?) are resolved perfectly in context, but the DDIM sigma_t variance formula is misprinted with inverted ratios in three places and quiz Q9 misquotes the DDPM sampling step - formula transcription needs tightening."
+}

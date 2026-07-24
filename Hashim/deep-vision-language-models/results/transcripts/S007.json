@@ -1,0 +1,247 @@
+{
+ "scenario": "S007",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [
+  "09_ar_alignment_rlhf_notes.pdf",
+  "12_vlm_vit_clip_reasoning.md"
+ ],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "whats the kl penalty doing in the ppo reward shaping",
+   "selection": [
+    "09_ar_alignment_rlhf_notes.pdf",
+    "12_vlm_vit_clip_reasoning.md"
+   ],
+   "latency_s": 12.6,
+   "text": "The KL penalty in PPO reward shaping keeps the updated policy from drifting too far away from the reference model. Here's what's happening:\n\n## The core issue it solves\n\nWhen you optimize a model to maximize reward using RL, it can **exploit edge cases** or **diverge catastrophically** from the behavior it learned during pretraining. The model might generate gibberish, become incoherent, or optimize for a narrowly-defined reward signal in ways that break alignment.\n\n## How the KL penalty works\n\nFrom your notes, the **KL-penalized reward** is:\n\n$$r_{i,t} = \\beta \\log\\left(\\frac{\\pi_\\theta(y_t | s_{i,t})}{\\pi_{\\text{ref}}(y_t | s_{i,t})}\\right)$$\n\nBreak this down:\n- **Numerator** \\(\\pi_\\theta(y_t | s_{i,t})\\): probability the new (updated) policy assigns to token \\(y_t\\)\n- **Denominator** \\(\\pi_{\\text{ref}}(y_t | s_{i,t})\\): probability the reference (pre-trained) policy assigned to the same token\n- **The ratio**: if the new policy gives the token much higher probability than the reference did, the ratio is large → the log is large → the penalty is large\n- **\\(\\beta\\)**: a hyperparameter controlling penalty strength (higher \\(\\beta\\) = stricter constraint)\n\n## Intuition\n\n**If the token probability stays similar**, the ratio ≈ 1 → log(1) = 0 → no penalty.\n\n**If the new policy diverges sharply** (e.g., \\(\\pi_\\theta\\) is 100× larger than \\(\\pi_{\\text{ref}}\\)), the ratio is large → log(ratio) is large → reward is heavily penalized.\n\nSo the effective reward becomes:\n$$\\text{Total reward} = \\text{(task reward from human preference)} - \\beta \\cdot \\text{(KL divergence penalty)}$$\n\nThis forces a **trade-off**: gain reward from alignment, but not by deviating too wildly from what the pretraining taught.\n\n## Practical effect\n\n- Keeps the model's outputs **legible and coherent** (doesn't abandon pretraining)\n- Prevents **reward hacking** (gaming the reward signal in unintended ways)\n- Acts as a **regularizer** that trades some reward optimization for stability\n- Typical \\(\\beta\\) values are small (0.01–0.1), so the penalty is gentle enough to still allow meaningful adaptation\n\nThis is why PPO is more **stable** than naive RL approaches—it optimizes for human-preferred outputs *while staying close* to what the model already knew.",
+   "source_mode": "file",
+   "follow_ups": [
+    "How does GRPO's approach differ from this?",
+    "Build a worked problem on KL penalty calculation",
+    "Compare PPO, DPO, and GRPO penalty mechanisms"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 2,
+   "prompt": "and the bradley-terry reward model loss",
+   "selection": [
+    "09_ar_alignment_rlhf_notes.pdf",
+    "12_vlm_vit_clip_reasoning.md"
+   ],
+   "latency_s": 8.7,
+   "text": "The **Bradley-Terry loss** trains the reward model to rank responses—it learns to give higher scores to preferred responses and lower scores to rejected ones. Here's what it does:\n\n## The formula\n\nFrom your notes:\n\n$$L(\\psi) = -\\log\\left(\\sigma\\left(r_\\psi(x, y_+) - r_\\psi(x, y_-)\\right)\\right)$$\n\nWhere:\n- \\(r_\\psi(x, y_+)\\): reward model's scalar score for the **winning/preferred response** \\(y_+\\)\n- \\(r_\\psi(x, y_-)\\): reward model's scalar score for the **losing/rejected response** \\(y_-\\)\n- \\(\\sigma(\\cdot)\\): the sigmoid function\n- The loss is computed over many human-annotated preference pairs\n\n## Breaking it down\n\n**What the sigmoid does:**\n\n$$\\sigma(z) = \\frac{1}{1 + e^{-z}}$$\n\nWhen \\(z = r_\\psi(x, y_+) - r_\\psi(x, y_-)\\):\n- If \\(y_+\\) scores **much higher** than \\(y_-\\), then \\(z\\) is large → \\(\\sigma(z) \\approx 1\\) → \\(-\\log(1) \\approx 0\\) → **low loss** ✓\n- If \\(y_+\\) scores **much lower** than \\(y_-\\), then \\(z\\) is negative and large → \\(\\sigma(z) \\approx 0\\) → \\(-\\log(0) \\to \\infty\\) → **huge loss** ✗\n- If they're **equal**, \\(z \\approx 0\\) → \\(\\sigma(0) = 0.5\\) → \\(-\\log(0.5) \\approx 0.69\\) → **moderate loss**\n\n## Intuition\n\nThe loss **punishes the model when it gets the ranking wrong**. It's optimizing the sigmoid of the *difference* because:\n\n1. **Pairwise ranking** is what matters for RLHF—you don't care about absolute reward values, only which response is better\n2. **The sigmoid converts the ranking margin into a probability** that \\(y_+\\) is preferred\n3. **Cross-entropy loss** on that probability (via the negative log) is a principled way to train a classifier\n\n## Why \"Bradley-Terry\"?\n\nThe Bradley-Terry model is a classical statistical model for pairwise comparisons. It says: given two items, the probability one wins is a logistic function of their latent scores. This loss is the maximum-likelihood estimator for those latent scores—in other words, it's the mathematically natural way to learn from pairwise preference data.\n\n## In context (your RLHF pipeline)\n\n1. **Collect human preferences:** pairs of responses labeled \"better\" / \"worse\"\n2. **Train reward model** with Bradley-Terry loss → learns to score responses\n3. **Use those scores** as rewards in PPO (combined with KL penalty)\n4. **Update the policy** to maximize those learned rewards\n\nSo the reward model is learning *what humans like*, and then PPO uses that signal to steer the policy—all while the KL penalty keeps it grounded.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "quick 3 question quiz on that w/ answers",
+   "selection": [
+    "09_ar_alignment_rlhf_notes.pdf",
+    "12_vlm_vit_clip_reasoning.md"
+   ],
+   "latency_s": 9.4,
+   "text": "Here's a 3-question quiz on Bradley-Terry loss and KL penalty — answers below each one.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "ok switching gears, use the vlm notes now. how many tokens does a vit get from a 224x224 image with patch size 16",
+   "selection": [
+    "09_ar_alignment_rlhf_notes.pdf",
+    "12_vlm_vit_clip_reasoning.md"
+   ],
+   "latency_s": 2.8,
+   "text": "From **Problem 1** in the VLM notes:\n\n**Image size:** 224 × 224  \n**Patch size:** 16 × 16\n\n**Patches per side:** 224 / 16 = 14\n\n**Number of spatial patches:** 14 × 14 = **196 patches**\n\n**With [CLS] token prepended:** 196 + 1 = **197 tokens total**\n\nSo the ViT gets **196 visual tokens** from the image itself, plus **1 [CLS] token** = **197 tokens** into the transformer.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 5,
+   "prompt": "and hows the clip contrastive loss set up",
+   "selection": [
+    "12_vlm_vit_clip_reasoning.md"
+   ],
+   "latency_s": 6.6,
+   "text": "From **Problem 4** in the VLM notes, here's the CLIP contrastive loss setup:\n\n## The loss formula\n\n$$L_{I→T} = \\frac{1}{B} \\sum_i -\\log\\left[\\frac{\\exp(\\ell_{ii})}{\\sum_j \\exp(\\ell_{ij})}\\right]$$\n\nWhere:\n- **\\(B\\)** = batch size (number of image-text pairs)\n- **\\(\\ell_{ij}\\)** = scaled logit between image \\(i\\) and text \\(j\\): \\(\\ell_{ij} = \\frac{u_i^T v_j}{\\tau}\\)\n- **\\(u_i\\)** = normalized image embedding\n- **\\(v_j\\)** = normalized text embedding\n- **\\(\\tau\\)** = temperature (controls softmax sharpness)\n- **Diagonal elements** \\(\\ell_{ii}\\) are the matched pairs (ground truth positives)\n\n## Intuition\n\nFor **each image \\(i\\)**, you compute softmax over **all texts in the batch**—the model should:\n- Give **high probability** to the correct matched text (diagonal)\n- Give **low probability** to all other texts (off-diagonal negatives)\n\nThe negative log turns this into a **cross-entropy loss**: it penalizes the model when it ranks the correct pair lower than mismatches.\n\n## Full symmetric loss\n\nCLIP actually uses **both directions** (image→text AND text→image):\n\n$$L = \\frac{1}{2}(L_{I→T} + L_{T→I})$$\n\nThis ensures the embeddings are well-aligned in both directions.\n\n## Key insight: InfoNCE decomposition\n\nThe notes decompose it as:\n\n$$L = -E[s_{ii}] + E\\left[\\log \\sum_j e^{s_{ij}}\\right]$$\n\n- **First term:** alignment (make matched pairs similar)\n- **Second term:** uniformity (spread negatives apart in the exponential space)\n\nTemperature \\(\\tau\\) controls the sharpness—**lower \\(\\tau\\)** → sharper softmax → stronger contrast between positives and negatives.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "make a 4 question quiz on the vlm stuff, dont mix in the alignment material from earlier",
+   "selection": [
+    "12_vlm_vit_clip_reasoning.md"
+   ],
+   "latency_s": 5.7,
+   "text": "Here's a 4-question VLM quiz grounded in the practice problems — ViT tokenization, CLIP loss, cross-attention, and token budgeting:",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make it harder with more FLOPs calculations",
+    "Add a visual reasoning question (self-consistency + IoU)",
+    "Create a practice problem set instead"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": [
+    {
+     "title": "Vision-Language Models: ViT, CLIP, and Attention Quiz",
+     "type": "assessment",
+     "params": {
+      "topic": "Vision-Language Models (ViT, CLIP, Cross-Attention, Token Budget)",
+      "assessment_type": "quiz",
+      "question_count": 4,
+      "question_types": [
+       "mcq",
+       "short_answer"
+      ],
+      "language": "en",
+      "level": "intermediate",
+      "additional_instructions": "Draw all 4 questions from 12_vlm_vit_clip_reasoning.md practice problems. Q1: ViT patch tokenization (like Problem 1). Q2: CLIP logit/loss mechanics (like Problem 4). Q3: Cross-attention computation (like Problem 5). Q4: LLaVA token budget (like Problem 6). Include numerical or conceptual clarity checks."
+     }
+    }
+   ],
+   "artifact": {
+    "assessment_id": "fc515dd3-efc3-44d2-a070-f27ed4b5bce8",
+    "status": "completed",
+    "latency_s": 39.5,
+    "title": "AI623 Quiz: Vision-Language Models Fundamentals",
+    "question_total": 4,
+    "marks_total": 25,
+    "types": [
+     "mcq",
+     "short_answer"
+    ],
+    "questions": [
+     {
+      "n": 1,
+      "type": "mcq",
+      "marks": 5,
+      "text": "A Vision Transformer processes an image of size \\(224 \\times 224 \\times 3\\) with patch size \\(P = 16\\). The model prepends a single [CLS] token to the patch sequence before feeding it to the transformer. What is the total token sequence length \\(L\\) that the transformer receives?"
+     },
+     {
+      "n": 2,
+      "type": "short_answer",
+      "marks": 7,
+      "text": "A CLIP batch contains \\(B = 2\\) matched image-text pairs. After scaling by temperature \\(\\tau\\), the logit matrix is:\\n\\n$$\\begin{array}{c|cc} & t_1 & t_2 \\\\ \\hline i_1 & 1.5 & 0.0 \\\\ i_2 & 0.0 & 1.5 \\end{array}$$\\n\\nCompute the image-to-text loss \\(L_{I \\to T} = \\frac{1}{B} \\sum_i -\\log \\left[ \\frac{\\exp(\\ell_{ii})}{\\sum_j \\exp(\\ell_{ij})} \\right]\\). Use \\(e^{1.5} \\approx 4.4817\\) and \\(e^0 = 1.0"
+     },
+     {
+      "n": 3,
+      "type": "short_answer",
+      "marks": 8,
+      "text": "In a cross-attention layer, a single text query vector attends to 4 image-patch keys and values. The hidden dimension is \\(d = 4\\). Given:\\n\\n$$Q = \\begin{bmatrix} 2 & 0 & 0 & 0 \\end{bmatrix} \\text{ (shape 1×4)}$$\\n\\n$$K = \\begin{bmatrix} 1 & 0 & 0 & 0 \\\\ 0 & 1 & 0 & 0 \\\\ 1 & 1 & 0 & 0 \\\\ 0 & 0 & 1 & 0 \\end{bmatrix} \\text{ (shape 4×4)}$$\\n\\n$$V = \\begin{bmatrix} 1 & 0 & 0 & 0 \\\\ 0 & 1 & 0 & 0 \\\\ 0"
+     },
+     {
+      "n": 4,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "A LLaVA-style VLM uses CLIP ViT-B/32 as its vision encoder to process an image of size \\(224 \\times 224\\). Patch size is \\(32 \\times 32\\), and the CLS token is discarded. The MLP projector outputs one language-model token per spatial image patch.\\n\\n(a) How many visual tokens enter the language model?\\n\\n(b) If the language model's context is structured as: [BOS] + [system prompt: 8 tokens] + [<im"
+     }
+    ],
+    "answer_key": [
+     {
+      "n": 1,
+      "answer": "B"
+     },
+     {
+      "n": 2,
+      "answer": "L_{I→T} ≈ 0.4055"
+     },
+     {
+      "n": 3,
+      "answer": "(a) Raw scores: (2, 0, 2, 0). (b) Scaled scores: (1.0, 0, 1.0, 0). (c) Output ≈ (0.5724, 0.2138, 0.2138, 0.0000) [or equivalent to 4 dp after proper softmax and V weighted sum]."
+     },
+     {
+      "n": 4,
+      "answer": "(a) 49 visual tokens. (b) L_ctx = 1 (BOS) + 8 (sys) + 1 (<image>) + 49 (visual) + 1 (</image>) + 15 (question) = 75 tokens."
+     }
+    ]
+   }
+  },
+  {
+   "n": 7,
+   "prompt": "which file did that last quiz come from",
+   "selection": [
+    "12_vlm_vit_clip_reasoning.md"
+   ],
+   "latency_s": 3.0,
+   "text": "The quiz came from **12_vlm_vit_clip_reasoning.md** — the file you attached to this message.\n\nIt's grounded in the seven worked problems from that practice bank, specifically:\n- Problem 1 (ViT patch tokenization)\n- Problem 4 (CLIP contrastive loss)\n- Problem 5 (cross-attention)\n- Problem 6 (LLaVA token budget)",
+   "source_mode": "none",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  }
+ ]
+}

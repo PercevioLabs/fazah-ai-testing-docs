@@ -1,0 +1,18 @@
+{
+  "scenario": "S019",
+  "turns": [
+    {"n": 1, "verdict": "Pass", "main_issue": "None", "note": "With no referent for 'these slides' it asks 'which materials should I draw from' instead of guessing or fabricating a deck."},
+    {"n": 2, "verdict": "Small Issue", "main_issue": "Other", "note": "Correctly resolves to the PPO/DPO/GRPO deck without re-asking, but the reply ends on a dangling stub ('one quick choice:') with the choice itself missing."},
+    {"n": 3, "verdict": "Pass", "main_issue": "None", "note": "Generates exactly 5 questions all traceable to the deck - pipeline reward model (slide 3), DPO no-reward-model scenario (slide 5), PPO complexity (slide 4), GRPO group normalization vs critic, and even the LoRA/PEFT question matches slide 6's real bullet."},
+    {"n": 4, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "Replaces exactly one question (Q3) at 4 marks with a model-requirements MCQ, but the instruction states GRPO needs 'policy and reference only' - the deck only says GRPO drops the critic, and GRPO still consumes reward scores to group-normalize."},
+    {"n": 5, "verdict": "Pass", "main_issue": "None", "note": "Adds a full answer key with rationale to the same 5 questions without altering them."},
+    {"n": 6, "verdict": "Pass", "main_issue": "None", "note": "Refine strips the answer key and rubric while keeping Q1-Q5 and marks intact; no answers leak into the reply."},
+    {"n": 7, "verdict": "Pass", "main_issue": "None", "note": "Names only 11_ppo_dpo_grpo_alignment.pptx (even though 09 notes were also in the selection by then) with slide-by-slide citations that all verify against the actual deck, including slide 6's LoRA/PEFT bullet."}
+  ],
+  "overall": "Pass with small issue",
+  "understanding": "Yes",
+  "source_use": "Yes",
+  "output_quality": "Yes",
+  "conversation_handling": "Yes",
+  "highlight": "Textbook deictic handling - asked for the referent instead of guessing, then carried the resolved deck through build, targeted edit, answer key, and student version with verifiably accurate slide citations; the one content slip is claiming GRPO needs 'policy and reference only', omitting its reward signal."
+}

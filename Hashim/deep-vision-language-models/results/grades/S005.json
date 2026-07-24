@@ -1,0 +1,20 @@
+{
+  "scenario": "S005",
+  "turns": [
+    {"n": 1, "verdict": "Small Issue", "main_issue": "Other", "note": "Setup deviation: only outline+intro+handwritten were selected, not all 13 files, so the guide is built from the outline's week-by-week topics — which all verify against the real outline (5 families, guidance weeks 7-8, DLMs week 11, hybrids week 14) — but the message truncates mid-section 13 and includes the ungrounded claim 'VAEs are a special case of score-based models'; nothing is attributed to the unreadable file 14."},
+    {"n": 2, "verdict": "Fail", "main_issue": "Missed instruction", "note": "Asked for 5 cross-topic connections without rewriting; the reply is a near-verbatim repeat of the turn-1 guide with no connections anywhere in the delivered text (truncated at the same point)."},
+    {"n": 3, "verdict": "Fail", "main_issue": "Other", "note": "Adds 2 formulas per section (ELBO, AR chain rule, closed-form jump, InfoNCE all correct) but the output truncates mid-ViT formula, so sections 8-13 and their formulas are missing from the delivered guide; the 'score SDE' formula shown mixes the ODE's ½g² into a dW equation."},
+    {"n": 4, "verdict": "Pass", "main_issue": "None", "note": "Complete one-page condensation keeping every topic block, with 5 plausible cross-topic connections finally added and surviving formulas intact."},
+    {"n": 5, "verdict": "Small Issue", "main_issue": "Other", "note": "Ten questions spanning the outline's weeks 1-14 with nothing from the handwritten file, but Q1 and Q4 are ambiguous double-answer MCQs ('Correct: B and D', 'D — both A and B') and Q10's explanation is cut off."},
+    {"n": 6, "verdict": "Fail", "main_issue": "Other", "note": "Teacher key matches the turn-5 questions and answers are consistent, but the message truncates mid-Q8 — answers for Q9 and Q10 are never delivered."},
+    {"n": 7, "verdict": "Small Issue", "main_issue": "Other", "note": "All 10 questions in student format with zero answers leaked (answer-leak check clean); Q10's option D is clipped mid-word by truncation."},
+    {"n": 8, "verdict": "Fail", "main_issue": "Other", "note": "Glossary is appended to the guide with accurate definitions, but the output truncates in the D entries ('ELBO (' cut mid-word) — terms E through Z are missing."},
+    {"n": 9, "verdict": "Small Issue", "main_issue": "Other", "note": "Attributions are verifiably accurate (outline weekly topics, intro's 60/40 oral-written PA split, slide 7 text-and-images scope) and file 14 is honestly reported as 'full text not extracted' (though it then 'assumes' its contents); the artifact inventory lists a connections-expanded guide that turn 2 never actually delivered, and the tail is truncated."}
+  ],
+  "overall": "Fail",
+  "understanding": "Mostly",
+  "source_use": "Partly",
+  "output_quality": "Partly",
+  "conversation_handling": "Partly",
+  "highlight": "Chronic mid-document truncation ruined five of nine turns (guide, formulas, answer key, and glossary all cut off) and turn 2 silently delivered zero of the requested connections; separately, the harness selected only outline+intro+handwritten instead of all 13 files, so the cross-file grounding this scenario targets was never actually exercised — within that selection, turn 9's attributions all verify."
+}

@@ -1,0 +1,23 @@
+{
+  "scenario": "S036",
+  "turns": [
+    {"n": 1, "verdict": "Pass", "main_issue": "None", "note": "180-min lesson-plan proposal grounded in file 06: schedules, closed-form jump, posterior, losses, DDPM sampling, DDIM with eta, Improved DDPM — no NCSN or flow-matching material; source_mode=file."},
+    {"n": 2, "verdict": "Pass", "main_issue": "None", "note": "Nine learning objectives added, all tied to the notes (SNR, closed-form jump, DDIM-DDPM collapse at eta=1 and t'=t-1, interpolation factor v); plan topic/duration preserved."},
+    {"n": 3, "verdict": "Small Issue", "main_issue": "Lost previous work", "note": "Text claims timings added, but the turn-3 proposal params dropped the learning_objectives and section structure carried in turn 2's params, keeping only lesson_duration=180."},
+    {"n": 4, "verdict": "Pass", "main_issue": "None", "note": "Committed to exactly two board examples (one forward, one DDIM sampling) from the notes' formulas; content delivered at turn 5 matches."},
+    {"n": 5, "verdict": "Pass", "main_issue": "None", "note": "Forward example arithmetic checks out (beta_100≈0.002, sqrt(0.905)≈0.951, pixel 0.951x0.7+0.308x0.5≈0.820) and X0-recovery formula matches the notes; the DDIM example is cut off mid-step in the capture."},
+    {"n": 6, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Generated exit ticket's Q2 scrambles the posterior mean: it puts sqrt(1-abar_{t-1})*beta_t on X0 and sqrt(abar_{t-1})*(1-alpha_t) on X_t, where the notes have sqrt(abar_{t-1})*beta_t on X0 and sqrt(alpha_t)*(1-abar_{t-1}) on X_t."},
+    {"n": 7, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Student ticket correctly shows no answers, but the key's DDIM variance sigma_t^2 = eta*(1-abar_t')/(1-abar_t)*(1-abar_t'/abar_t) inverts the notes' final ratio (should be 1-abar_t/abar_t') and fails to square eta; it also silently rewrote all three ticket questions (new given values, 9 marks vs 30) instead of stripping answers from the turn-6 ticket."},
+    {"n": 8, "verdict": "Pass", "main_issue": "None", "note": "50-mark homework is student-facing and builds on the lesson (jump, X0 recovery, posterior, DDIM eta); the cosine-schedule computation in A1 goes slightly beyond the notes but matches the lesson's linear-vs-cosine mention."},
+    {"n": 9, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "Coverage check is the right behavior and flags plausible gaps, but its lesson summary omits Improved DDPM even though the turn-1/2 plan explicitly had an 'Improved DDPM & learnable variance' section — it audited against a silently reduced plan."},
+    {"n": 10, "verdict": "Fail", "main_issue": "Changed unrelated content", "note": "'Shorten the intro, don't change anything else' produced a 5-section plan whose timings total only 130 of 180 minutes (confirmed by the turn-12 inventory) and the Improved-DDPM/exam-pitfalls sections from the original plan are gone."},
+    {"n": 11, "verdict": "Small Issue", "main_issue": "Missed instruction", "note": "Thorough cross-asset audit finds real issues (A3 out of scope, x_t vs X_t casing) but only reports and asks permission instead of correcting, and misattributes 'You said you'd remove it' to the user, who never said that."},
+    {"n": 12, "verdict": "Pass", "main_issue": "None", "note": "Names 06_diffusion_ddpm_ddim_notes.pdf as the only source and inventories all five assets honestly, including flagging its own unresolved scope and notation issues."}
+  ],
+  "overall": "Fail",
+  "understanding": "Yes",
+  "source_use": "Yes",
+  "output_quality": "Partly",
+  "conversation_handling": "Partly",
+  "highlight": "Both student-facing assessments misstate formulas from the notes — the exit-ticket artifact scrambles the posterior-mean coefficients and the teacher key inverts the DDIM variance ratio (1-abar_t'/abar_t instead of 1-abar_t/abar_t') — and the 'shorten the intro only' edit left a lesson plan whose sections total 130 of 180 minutes."
+}

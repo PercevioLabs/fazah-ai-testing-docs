@@ -1,0 +1,210 @@
+{
+ "scenario": "S013",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [
+  "01_dvlm_introduction.pptx"
+ ],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "explain the difference between llm, vlm and mllm for my class",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 9.4,
+   "text": "## LLM vs. VLM vs. MLLM\n\nThese three represent a progression in what a model can understand and generate. Here's the core distinction:\n\n### **LLM (Large Language Model)**\nAn LLM is trained primarily on **text** and understands/generates text only. Think of it as a language specialist — it reads text input and produces text output. Examples: GPT-4 (text mode), Claude, Llama. The model has no built-in ability to process images, audio, or video.\n\n### **VLM (Vision Language Model)**\nA VLM is an LLM **with a vision encoder added**. It can now understand both **text AND images**, and still generates text. The vision encoder converts images into a representation the language model can work with. VLMs bridge vision and language: you can show it an image and ask questions about it. Examples: GPT-4V, Claude with vision, LLaVA, CLIP-based models. It cannot process video or audio natively.\n\n### **MLLM (Multimodal Large Language Model)**\nAn MLLM is the most general type — it processes **multiple modalities**: text, images, video, audio, and potentially more. It's built from the ground up to fuse information across these different input types. This is the future direction: a single model that can see, hear, read, and speak. Most modern frontier models (GPT-4o, Claude 3.5 Sonnet, Gemini) are moving toward true MLLMs.\n\n### **Quick Comparison**\n\n| Model | Text | Images | Video | Audio | Output |\n|-------|------|--------|-------|-------|--------|\n| **LLM** | ✓ | ✗ | ✗ | ✗ | Text |\n| **VLM** | ✓ | ✓ | ✗ | ✗ | Text |\n| **MLLM** | ✓ | ✓ | ✓ | ✓ | Text (or other) |\n\n### **Teaching Note**\nFor your course, the key insight is: **VLMs and MLLMs are built on top of LLMs.** A VLM is not a replacement for an LLM — it's an LLM extended with vision capabilities. And your course focuses on the *generative models* that power these systems (diffusion models, VAEs, flow matching, etc.), which provide the deep learning foundations that enable all three to generate and understand rich representations.",
+   "source_mode": "file",
+   "follow_ups": [
+    "How does a vision encoder work in VLMs?",
+    "Make a quiz on LLM, VLM, MLLM definitions",
+    "What role do diffusion models play here?"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 2,
+   "prompt": "add one concrete example scenario for each of the 3",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 7.3,
+   "text": "## LLM vs. VLM vs. MLLM with Concrete Scenarios\n\nThese three represent a progression in what a model can understand and generate. Here's the core distinction:\n\n### **LLM (Large Language Model)**\nAn LLM is trained primarily on **text** and understands/generates text only. Think of it as a language specialist — it reads text input and produces text output.\n\n**Concrete Example:** A student asks ChatGPT: *\"Summarize the French Revolution in 3 bullet points.\"* The LLM reads the text prompt, understands the request, and outputs a text summary. No images involved — pure language-to-language.\n\n### **VLM (Vision Language Model)**\nA VLM is an LLM **with a vision encoder added**. It can now understand both **text AND images**, and still generates text. The vision encoder converts images into a representation the language model can work with.\n\n**Concrete Example:** A student takes a photo of a handwritten math problem on a whiteboard and asks GPT-4V: *\"Solve this equation.\"* The VLM sees the image, reads the handwriting, understands the math, and generates a text solution with steps. Neither a pure LLM nor a vision-only model could do this seamlessly.\n\n### **MLLM (Multimodal Large Language Model)**\nAn MLLM is the most general type — it processes **multiple modalities**: text, images, video, audio, and potentially more. It's built from the ground up to fuse information across these different input types.\n\n**Concrete Example:** A student uploads a 30-second video of a chemistry experiment (bubbling reaction, color change) and asks Claude 3.5 Sonnet: *\"What reaction is this and why is it bubbling?\"* The MLLM watches the video (visual + temporal understanding), hears the sound (audio cues like the fizzing), reads the text question, and generates an explanation. A VLM cannot process video; an LLM cannot process any of it — only an MLLM can fuse all three modalities together.\n\n### **Quick Comparison**\n\n| Model | Text | Images | Video | Audio | Output |\n|-------|------|--------|-------|-------|--------|\n| **LLM** | ✓ | ✗ | ✗ | ✗ | Text |\n| **VLM** | ✓ | ✓ | ✗ | ✗ | Text |\n| **MLLM** | ✓ | ✓ | ✓ | ✓ | Text (or other) |\n\n### **Teaching Note**\nFor your course, the key insight is: **VLMs and MLLMs are built on top of LLMs.** A VLM is not a replacement for an LLM — it's an LLM extended with vision capabilities. And your course focuses on the *generative models* that power these systems (diffusion models, VAEs, flow matching, etc.), which provide the deep learning foundations that enable all three to generate and understand rich representations.",
+   "source_mode": "file",
+   "follow_ups": [
+    "How do vision encoders work in VLMs?",
+    "Make a quiz on LLM/VLM/MLLM concepts",
+    "Explain how diffusion models enable these architectures"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "what does the course say it will NOT cover",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 4.4,
+   "text": "According to Slide 3 of the introduction file, the course will **NOT** cover:\n\n- **Convolutions + Attention**\n- **CNNs** (Convolutional Neural Networks)\n- **RNNs** (Recurrent Neural Networks)\n- **LSTMs** (Long Short-Term Memory networks)\n- **Transformers**\n- **How to train + evaluate + build/deploy AI Models** (the engineering/MLOps side)\n\nThe course assumes you already have **advanced knowledge** of these foundational topics. Instead, AI 623 focuses on the generative models themselves — diffusion models, VAEs, score-based models, flow matching, autoregressive generation, alignment techniques (RLHF/PPO/DPO/GRPO), and vision-language models — that sit *on top* of these foundations.\n\nIn other words: you need to know how transformers work before you walk in; the course teaches you what to *do* with them for generation and multimodal understanding.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "make a 3 question check on the definitions",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 5.6,
+   "text": "Here's a quick 3-question check on LLM, VLM, and MLLM definitions — tests whether students can distinguish the three and spot which modalities each handles.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make it harder with scenarios",
+    "Add a matching question",
+    "Publish to students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": [
+    {
+     "title": "LLM vs. VLM vs. MLLM — Definitions Check",
+     "type": "assessment",
+     "params": {
+      "topic": "LLM, VLM, MLLM Definitions",
+      "assessment_type": "quiz",
+      "question_count": 3,
+      "question_types": [
+       "mcq",
+       "short_answer",
+       "mcq"
+      ],
+      "language": "en",
+      "level": "beginner",
+      "additional_instructions": "Test definitional understanding: which modalities each model type processes (text, images, video, audio), ability to classify a scenario, and conceptual relationships between the three types."
+     }
+    }
+   ],
+   "artifact": {
+    "assessment_id": "c9bffb51-75c7-44fc-89bd-0a2416e5532c",
+    "status": "completed",
+    "latency_s": 26.5,
+    "title": "Quiz: Foundational Definitions of LLM, VLM, and MLLM",
+    "question_total": 3,
+    "marks_total": 10,
+    "types": [
+     "mcq",
+     "short_answer"
+    ],
+    "questions": [
+     {
+      "n": 1,
+      "type": "mcq",
+      "marks": 3,
+      "text": "Which of the following statements correctly identifies the key distinguishing feature of a Vision Language Model (VLM) compared to a standard Large Language Model (LLM)?"
+     },
+     {
+      "n": 2,
+      "type": "mcq",
+      "marks": 3,
+      "text": "A researcher needs to build a system that can analyze a video file, extract spoken dialogue, and generate a written summary. Which model type would be most appropriate for this task?"
+     },
+     {
+      "n": 3,
+      "type": "short_answer",
+      "marks": 4,
+      "text": "Explain the relationship between an LLM, a VLM, and an MLLM. What is the hierarchical or structural connection between these three model types?"
+     }
+    ],
+    "answer_key": [
+     {
+      "n": 1,
+      "answer": "B"
+     },
+     {
+      "n": 2,
+      "answer": "C"
+     },
+     {
+      "n": 3,
+      "answer": "An LLM is the foundational model that processes only text input and output. A VLM builds upon an LLM by adding a vision encoder, allowing it to understand and process both language and images while generating text. An MLLM is a more general extension that encompasses all three types: it can process,"
+     }
+    ]
+   }
+  },
+  {
+   "n": 5,
+   "prompt": "gimme a student version, no answers",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 4.3,
+   "text": "```\nAI 623 — Quick Check: LLM, VLM, MLLM Definitions\n\nName: ________________________     Date: ________________\n\n---\n\nQ1. A student wants to upload a photo of a handwritten equation and get a step-by-step solution. Which model type is most appropriate?\n   A. Large Language Model (LLM)\n   B. Vision Language Model (VLM)\n   C. Multimodal Language Model (MLLM)\n   D. None of the above\n\n---\n\nQ2. Which of the following correctly describes the relationship between an LLM and a VLM?\n   A. They are completely separate model architectures with no connection\n   B. A VLM is an LLM with an added vision encoder\n   C. An LLM is more advanced than a VLM\n   D. A VLM can only process images and cannot understand text\n\n---\n\nQ3. An MLLM can process text, images, video, and audio. What is the key advantage of this over a VLM?\n   (Explain in 2–3 sentences.)\n\n___________________________________________________________________________\n\n___________________________________________________________________________\n\n___________________________________________________________________________\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "which file did this come from",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 2.5,
+   "text": "This 3-question check came from **01_dvlm_introduction.pptx** — specifically Slide 2, which defines LLM, VLM, and MLLM.\n\nI created the questions *based on* those definitions from the file, but the questions themselves are new (not taken verbatim from the slides). The quiz I just gave you is grounded in the course introduction material you attached.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  }
+ ]
+}
