@@ -1,0 +1,19 @@
+{
+  "scenario": "S012",
+  "turns": [
+    {"n": 1, "verdict": "Fail", "main_issue": "Clarification problem", "note": "Fully specified 6-rule prompt gets 'let me confirm one quick choice before I finalize the plan:' with clarify=null - no question is ever posed and no plan, timings, examples, or exit ticket are delivered."},
+    {"n": 2, "verdict": "Small Issue", "main_issue": "Missed instruction", "note": "Recovers with a lesson-plan card honoring the 10-min recap and 35-min interpolant (+5) in text, but params carry only topic/duration - the 2-example, exit-ticket, no-code, and sum-to-90 constraints are not encoded anywhere."},
+    {"n": 3, "verdict": "Small Issue", "main_issue": "Missed instruction", "note": "Swap of example 2 for a target-velocity example is acknowledged in text, but the proposal params are again bare, so 'only example 2 replaced, still exactly 2 examples' is not verifiable or guaranteed."},
+    {"n": 4, "verdict": "Fail", "main_issue": "Missed instruction", "note": "Structure finally appears and the 2-min ODE note is correct (deterministic variant, halved score term), but section timings sum to 88 (10+2+35+8+10+13+10), breaking the sum-to-90 rule, and an unrequested 13-min CFM overview section is inserted."},
+    {"n": 5, "verdict": "Pass", "main_issue": "None", "note": "Keeps exactly 5 questions while raising difficulty; the harder set (visible via Turn 6) stays entirely inside the notes' Parts 1-5 (reverse SDE, interpolant, CFM master equation, OT coupling, Mean-Flow)."},
+    {"n": 6, "verdict": "Pass", "main_issue": "None", "note": "Separate key matches all 5 questions and the notes exactly: reverse SDE, v = x1 - x0 constant, CFM master velocity m-dot + (a-dot/a)(x_t - m) with the derivative-first trap, OT cost ||x0i - x1j||^2, and the Mean-Flow loss with StopGradient plus its 'mathematically invalid' warning."},
+    {"n": 7, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "TA handout keeps both worked examples (arithmetic correct: x_t = [1-t, t], v = [-1,1]) and the exit ticket with no code, but the timing table sums to 78 and invents a '12 slack/Q&A' entry to claim 90, writes VE-SDE as dx = sigma(t)^2 dW (notes: sqrt(d sigma^2(t)/dt) dW), and silently drops the CFM overview section from Turn 4."},
+    {"n": 8, "verdict": "Pass", "main_issue": "None", "note": "Confirms 07_flow_matching_notes.pdf as the only source - accurate, since even the OT and Mean-Flow content genuinely lives in that file's Parts 4-5."}
+  ],
+  "overall": "Fail",
+  "understanding": "Mostly",
+  "source_use": "Yes",
+  "output_quality": "Partly",
+  "conversation_handling": "Partly",
+  "highlight": "Turn 1 stalled on a phantom clarification (clarify=null, no plan ever delivered) and the sum-to-90 timing rule was never satisfied (params total 88, handout table 78 plus invented slack) - yet the Turn-6 exit-ticket answer key is a flawless walk of all five parts of the notes."
+}

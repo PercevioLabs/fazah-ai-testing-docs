@@ -1,0 +1,20 @@
+{
+  "scenario": "S008",
+  "turns": [
+    {"n": 1, "verdict": "Pass", "main_issue": "None", "note": "All numbers match the notes' Problem 1 exactly (196 patches, 197 tokens, 590,592 patch-embedding params); source_mode=file."},
+    {"n": 2, "verdict": "Small Issue", "main_issue": "Other", "note": "Content reproduces Problems 3-4 exactly (0.7361 to 0.3065, 0.6653 to 0.4076, avg 0.3739) but source_mode='none' despite the explicit 'same notes' instruction - grounding not registered."},
+    {"n": 3, "verdict": "Small Issue", "main_issue": "Other", "note": "Shapes and Problems 5-6 reproduced exactly (weights 0.4011/0.1978/0.4011, output (3,4); 49 patches, (12,49) scores) but source_mode='none' again."},
+    {"n": 4, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Generated quiz Q3's answer key computes three attention scores [2,3,4] via dimensionally invalid dot products; the printed K defines two image-patch keys ([1,1,2],[0,1,0]) giving scores [3,1] - the key cannot be derived from its own question. The other five questions check out (393,728 params; token budget 75)."},
+    {"n": 5, "verdict": "Small Issue", "main_issue": "Changed unrelated content", "note": "Student proposal has 6 questions with no answers (no leakage), but its per-question type layout (Q4 and Q6 MCQ) mismatches the generated quiz (Q5 and Q6 MCQ), so 'same six questions' is not guaranteed."},
+    {"n": 6, "verdict": "Pass", "main_issue": "None", "note": "Study-notes proposal covers exactly the three built-up topics with the correct course_material_id for the VLM file."},
+    {"n": 7, "verdict": "Fail", "main_issue": "Changed unrelated content", "note": "The 'trim the study notes' refine targets assessment b5583de6 - the Turn-4 quiz artifact, not the notes - so executing it would overwrite the quiz with condensed notes."},
+    {"n": 8, "verdict": "Fail", "main_issue": "Other", "note": "Says 'Here's a concise topic summary... ready to embed' but attaches no summary text, suggestion, or refine - nothing was actually delivered."},
+    {"n": 9, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "Correctly confirms the single source 12_vlm_vit_clip_reasoning.md, but the inventory mislabels the only generated quiz as 'student version, no answers' (it was the teacher version with an answer key) and lists a topic summary that was never delivered."}
+  ],
+  "overall": "Fail",
+  "understanding": "Yes",
+  "source_use": "Partly",
+  "output_quality": "Partly",
+  "conversation_handling": "Partly",
+  "highlight": "The Turn-4 quiz's Q3 answer key cannot be derived from its own printed matrices, and the Turn-7 'trim the notes' refine targets the quiz artifact instead of the notes - both would silently corrupt teacher deliverables despite otherwise perfect single-source fidelity."
+}

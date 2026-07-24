@@ -1,0 +1,207 @@
+{
+ "scenario": "S033",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [
+  "01_dvlm_introduction.pptx"
+ ],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "make one page of student notes from this intro lecture",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 4.2,
+   "text": "Here's a one-page study guide for the intro lecture — a structured summary students can review and annotate.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make it a handout (PDF exportable)",
+    "Add key formulas from later lectures",
+    "Create a glossary of all terms"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": [
+    {
+     "title": "AI623 Introduction — One-Page Study Notes",
+     "type": "teaching_material",
+     "params": {
+      "topic": "AI623 Course Introduction",
+      "material_type": [
+       "study_notes"
+      ],
+      "notes_format": "structured",
+      "language": "en",
+      "level": "advanced"
+     }
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "prompt": "keep the llm, vlm and mllm definitions exactly how the slides word them, dont paraphrase those",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 7.2,
+   "text": "```markdown\n# AI 623: Deep Vision Language Models — Introduction Study Notes\n\n## Course Overview\n**AI 623** is an advanced course on Multimodal (Large) Language Models (MLLMs). The course provides a rigorous treatment of Deep Generative Models for Text and Vision, which serve as foundations for MLLMs.\n\n## Key Definitions\n**Large Language Model (LLM):** Large model primarily trained on language and is able to understand text and generate text.\n\n**Vision Language Model (VLM):** An LLM with a vision encoder, allowing it to understand language and images and generate text.\n\n**Multimodal (Large) Language Model (MLLM):** A more general type of model that is built to process, understand and generate multiple modalities: Text, Images, Video, Audio.\n\n## What We Will Cover\n- Deep Generative Models for Text and Vision\n- Foundations underlying MLLMs\n- Focus: Text and Images (two modalities)\n\n## What We Will NOT Cover\n- Convolutions + Attention\n- CNNs, RNNs, LSTMs, Transformers\n- How to train, evaluate, build/deploy AI Models\n\n## Prerequisites\nStudents must have advanced knowledge of:\n- Applied Probability\n- Multivariable Calculus\n- Deep Learning\n- PyTorch\n\n## Course Grading & Policies\n| Component | Weight |\n|-----------|--------|\n| Attendance | 5% |\n| Programming Assignments (PAs) | 40% |\n| Final Project | 35% |\n| Final Exam | 20% |\n\n**Key Policies:**\n- **Assessments:** Open-book, open-notes\n- **Collaboration:** NO collaboration on PAs; concept discussion allowed (no code/pseudocode sharing)\n- **PA Evaluation:** Oral (60%) + Written (40%)\n- **Final Project:** Groups of 2–3; submit PDF report + Code repo + Presentation + Individual Oral Viva\n- **AI Usage:** Use as supplementary tool only; overreliance leads to false confidence and poor future performance\n- **Attendance:** >2 absences trigger deductions; approved OSA petitions required for missed assessments\n\n## Learning Resources\nRecommended reference books and courses listed on syllabus (see slide 5 for full URLs).\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "now simplify everything else into plain language, my students find the slides too dense",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 5.2,
+   "text": "```markdown\n# AI 623: Deep Vision Language Models — Introduction Study Notes\n\n## Course Overview\nThis is an advanced course about AI models that can work with both text and images. We'll focus on understanding the deep learning models that power these systems.\n\n## Key Definitions\n**Large Language Model (LLM):** Large model primarily trained on language and is able to understand text and generate text.\n\n**Vision Language Model (VLM):** An LLM with a vision encoder, allowing it to understand language and images and generate text.\n\n**Multimodal (Large) Language Model (MLLM):** A more general type of model that is built to process, understand and generate multiple modalities: Text, Images, Video, Audio.\n\n## What We'll Learn\nWe'll study the deep learning models that form the foundation for systems like these. We're focusing on text and images.\n\n## What We Won't Cover\n- Basic deep learning building blocks (CNNs, RNNs, Transformers, Attention)\n- How to actually train or deploy models in the real world\n\n## What You Need to Know\nThis course assumes you already understand:\n- Probability and calculus\n- Deep learning basics\n- How to code in Python and PyTorch\n\n## How You'll Be Graded\n- Attendance: 5%\n- Programming assignments: 40%\n- Final project (group work): 35%\n- Final exam: 20%\n\n**Important Rules:**\n- All exams are open-book and open-notes\n- You work alone on programming assignments—no sharing code or solutions\n- You can discuss concepts and ideas, just don't share code\n- Missing more than 2 classes = grade penalties\n- If you miss an assignment, you need official approval to get it excused\n- Don't rely too heavily on AI tools—they can trick you into thinking you understand something you don't\n\n## Final Project\nWork in groups of 2–3 people. You'll turn in a written report, your code, give a presentation, and do an individual interview with the instructor.\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "add a box for what this course will NOT cover",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 3.3,
+   "text": "```markdown\n# AI 623: Deep Vision Language Models — Introduction Study Notes\n\n## Course Overview\nThis is an advanced course about AI models that can work with both text and images. We'll focus on understanding the deep learning models that power these systems.\n\n## Key Definitions\n**Large Language Model (LLM):** Large model primarily trained on language and is able to understand text and generate text.\n\n**Vision Language Model (VLM):** An LLM with a vision encoder, allowing it to understand language and images and generate text.\n\n**Multimodal (Large) Language Model (MLLM):** A more general type of model that is built to process, understand and generate multiple modalities: Text, Images, Video, Audio.\n\n## What We'll Learn\nWe'll study the deep learning models that form the foundation for systems like these. We're focusing on text and images.\n\n---\n\n## ⚠️ What We Will NOT Cover\n- Convolutions + Attention mechanisms\n- CNNs, RNNs, LSTMs, Transformers\n- How to train, evaluate, build/deploy AI models in practice\n\n---\n\n## What You Need to Know\nThis course assumes you already understand:\n- Probability and calculus\n- Deep learning basics\n- How to code in Python and PyTorch\n\n## How You'll Be Graded\n- Attendance: 5%\n- Programming assignments: 40%\n- Final project (group work): 35%\n- Final exam: 20%\n\n**Important Rules:**\n- All exams are open-book and open-notes\n- You work alone on programming assignments—no sharing code or solutions\n- You can discuss concepts and ideas, just don't share code\n- Missing more than 2 classes = grade penalties\n- If you miss an assignment, you need official approval to get it excused\n- Don't rely too heavily on AI tools—they can trick you into thinking you understand something you don't\n\n## Final Project\nWork in groups of 2–3 people. You'll turn in a written report, your code, give a presentation, and do an individual interview with the instructor.\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 5,
+   "prompt": "add 3 self check questions at the end, no answers",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 5.5,
+   "text": "```markdown\n# AI 623: Deep Vision Language Models — Introduction Study Notes\n\n## Course Overview\nThis is an advanced course about AI models that can work with both text and images. We'll focus on understanding the deep learning models that power these systems.\n\n## Key Definitions\n**Large Language Model (LLM):** Large model primarily trained on language and is able to understand text and generate text.\n\n**Vision Language Model (VLM):** An LLM with a vision encoder, allowing it to understand language and images and generate text.\n\n**Multimodal (Large) Language Model (MLLM):** A more general type of model that is built to process, understand and generate multiple modalities: Text, Images, Video, Audio.\n\n## What We'll Learn\nWe'll study the deep learning models that form the foundation for systems like these. We're focusing on text and images.\n\n---\n\n## ⚠️ What We Will NOT Cover\n- Convolutions + Attention mechanisms\n- CNNs, RNNs, LSTMs, Transformers\n- How to train, evaluate, build/deploy AI models in practice\n\n---\n\n## What You Need to Know\nThis course assumes you already understand:\n- Probability and calculus\n- Deep learning basics\n- How to code in Python and PyTorch\n\n## How You'll Be Graded\n- Attendance: 5%\n- Programming assignments: 40%\n- Final project (group work): 35%\n- Final exam: 20%\n\n**Important Rules:**\n- All exams are open-book and open-notes\n- You work alone on programming assignments—no sharing code or solutions\n- You can discuss concepts and ideas, just don't share code\n- Missing more than 2 classes = grade penalties\n- If you miss an assignment, you need official approval to get it excused\n- Don't rely too heavily on AI tools—they can trick you into thinking you understand something you don't\n\n## Final Project\nWork in groups of 2–3 people. You'll turn in a written report, your code, give a presentation, and do an individual interview with the instructor.\n\n---\n\n## Self-Check Questions\n\n1. What is the key difference between a VLM and an LLM?\n\n2. What are the four modalities that an MLLM can process?\n\n3. Name two things this course will NOT cover, and explain why that knowledge is a prerequisite instead.\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "now a separate answer sheet for me",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 3.5,
+   "text": "```markdown\n# AI 623: Introduction Study Notes — Answer Sheet\n\n## Self-Check Questions — Answers\n\n**1. What is the key difference between a VLM and an LLM?**\n\nAn LLM is trained primarily on language and can understand text and generate text. A VLM is an LLM with an additional vision encoder, so it can understand both language and images and generate text.\n\n**2. What are the four modalities that an MLLM can process?**\n\nText, Images, Video, and Audio.\n\n**3. Name two things this course will NOT cover, and explain why that knowledge is a prerequisite instead.**\n\nAny two of the following:\n- **Convolutions + Attention mechanisms** — These are foundational deep learning concepts students should already know\n- **CNNs, RNNs, LSTMs, Transformers** — These are core neural network architectures that form the building blocks for the models we study\n- **How to train, evaluate, build/deploy AI models in practice** — This course focuses on understanding generative models theoretically, not the engineering/operational side\n\nThe reason these are prerequisites rather than topics we cover is that the course assumes advanced deep learning knowledge and focuses specifically on the mathematical foundations of generative models for text and vision.\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 7,
+   "prompt": "is the student version still one page? trim it if not, but dont touch the definitions",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 4.4,
+   "text": "```markdown\n# AI 623: Deep Vision Language Models — Introduction Study Notes\n\n## Course Overview\nThis is an advanced course about AI models that can work with both text and images. We'll focus on understanding the deep learning models that power these systems.\n\n## Key Definitions\n**Large Language Model (LLM):** Large model primarily trained on language and is able to understand text and generate text.\n\n**Vision Language Model (VLM):** An LLM with a vision encoder, allowing it to understand language and images and generate text.\n\n**Multimodal (Large) Language Model (MLLM):** A more general type of model that is built to process, understand and generate multiple modalities: Text, Images, Video, Audio.\n\n## What We'll Learn & What We Won't\n**In scope:** Deep learning models that form the foundation for MLLMs (focus on text and images)\n\n**Out of scope:** Convolutions, Attention, CNNs, RNNs, LSTMs, Transformers, training/deploying models\n\n## Prerequisites\n- Probability and calculus\n- Deep learning basics\n- Python and PyTorch\n\n## Grading\n- Attendance: 5%\n- Programming assignments (individual): 40%\n- Final project (groups of 2–3): 35%\n- Final exam: 20%\n\n## Key Rules\n- Exams: open-book, open-notes\n- PAs: individual work only; no code sharing (concept discussion OK)\n- Absences: >2 = grade penalties\n- Use AI tools as supplementary only, not as a crutch\n- Final project: submit report + code + presentation + individual oral\n\n---\n\n## Self-Check Questions\n\n1. What is the key difference between a VLM and an LLM?\n\n2. What are the four modalities that an MLLM can process?\n\n3. Name two things this course will NOT cover, and explain why that knowledge is a prerequisite instead.\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 8,
+   "prompt": "confirm which file u used and whats in the final package",
+   "selection": [
+    "01_dvlm_introduction.pptx"
+   ],
+   "latency_s": 4.4,
+   "text": "✓ Used file: **01_dvlm_introduction.pptx** (the file you attached)\n\n**Final package includes:**\n\n1. **Student notes** (1 page) — simplified explanations of course overview, the three key definitions (kept word-for-word as you required), what's in/out of scope, prerequisites, grading breakdown, and key policies\n\n2. **Answer sheet** (separate page) — answers to the 3 self-check questions at the end of the student notes, with explanations\n\nBoth are ready to download or print for your students.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make a quiz from this intro lecture",
+    "Turn this into slides for lecture",
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  }
+ ]
+}

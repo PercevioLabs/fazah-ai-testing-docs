@@ -1,0 +1,17 @@
+{
+  "scenario": "S002",
+  "turns": [
+    {"n": 1, "verdict": "Pass", "main_issue": "None", "note": "Auto-selected 07_flow_matching_notes.pdf with source_mode=file; interpolant X_t = tX_1+(1−t)X_0 (t=0 noise, t=1 data) and target velocity v = X_1−X_0 both match the notes."},
+    {"n": 2, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "VE drift f=0 and VP drift f=−½β(t)x_t are correct with f/g roles identified, but it writes the VE-SDE as dx=σ(t)dW_t where the notes have dx=√(dσ²(t)/dt)dW_t."},
+    {"n": 3, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Predictor written as x_{i−1}=x_i−[f−½g²S_θ]Δt+g·Z_i — the ½ belongs only to the probability-flow ODE per the notes' trap warning, and the √Δt scaling on the noise is dropped; the Langevin corrector is also given with a wrong sign (x←x−αS_θ+√(2α)Z); the notes' ODE-halves-score/drops-noise contrast is never mentioned."},
+    {"n": 4, "verdict": "Fail", "main_issue": "Other", "note": "Only an answer key is delivered (5 answers, all supported by the notes: v=X_1−X_0, VE f=0, VP drift, predictor components) — the quiz questions themselves never appear, and it claims 'the quiz card is now ready in your panel' while the transcript records no suggestion and no artifact."},
+    {"n": 5, "verdict": "Fail", "main_issue": "Missed instruction", "note": "Responds only 'the quiz is generated and ready to publish' — no student version is produced anywhere in the transcript (nothing leaked, but nothing delivered either)."},
+    {"n": 6, "verdict": "Fail", "main_issue": "Other", "note": "Names the right file (07_flow_matching_notes.pdf) but contradicts the user by claiming 'the file you attached to this message' after the user said they never picked one, and leaks internal prompt scaffolding ('<selected_course_sources> block', 'FOCUS')."}
+  ],
+  "overall": "Fail",
+  "understanding": "Mostly",
+  "source_use": "Partly",
+  "output_quality": "No",
+  "conversation_handling": "Partly",
+  "highlight": "Auto-selection and turns 1-2 were solid, but the predictor-corrector answer commits the exact trap the notes warn about (½g² in the Euler-Maruyama step, no √Δt), turns 4-5 claim quiz cards that don't exist in the transcript, and turn 6 tells the user they attached the file while exposing prompt internals."
+}

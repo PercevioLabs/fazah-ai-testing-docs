@@ -1,0 +1,147 @@
+{
+ "scenario": "S022",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [
+  "06_diffusion_ddpm_ddim_notes.pdf"
+ ],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "use the same sources as before and make me a worksheet",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 5.0,
+   "text": "I'll build a worksheet grounded in the DDPM & DDIM notes you've attached — covering forward process, reverse process, sampling, and the key formulas.\n<function_calls>\n<invoke name=\"generate_assessment\">\n<parameter name=\"type\">assessment</parameter>\n<parameter name=\"title\">DDPM & DDIM Diffusion Models — Practice Worksheet</parameter>\n<parameter name=\"description\">A worksheet for advanced students covering DDPM and DDIM core concepts: noise schedules, forward and reverse processes, posterior distributions, training losses, and sampling strategies (DDPM vs. DDIM vs. Improved DDPM). Questions emphasize formula derivation, parameter relationships, and practical distinctions between sampling methods. Grounded in 06_diffusion_ddpm_ddim_notes.pdf.</parameter>\n<parameter name=\"params\">{\n  \"topic\": \"DDPM & DDIM Diffusion Models\",\n  \"assessment_type\": \"worksheet\",\n  \"question_count\": 12,\n  \"question_types\": [\"short_answer\", \"fill_blank\"],\n  \"level\": \"advanced\",\n  \"language\": \"en\"\n}</parameter>\n</invoke>\n</function_calls>\n\nHere's a 12-question worksheet — short-answer and fill-in-the-blank — grounded in your DDPM & DDIM notes. It covers noise schedules, forward/reverse processes, posterior distributions, training losses, and the key distinctions between DDPM, DDIM, and Improved DDPM sampling. You can tweak the difficulty, add more questions, or refocus any section on the card.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 2,
+   "prompt": "it was the diffusion notes — i just selected them for u",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 3.6,
+   "text": "Ah, got it — thanks for clarifying! Yes, I'm grounded in the DDPM & DDIM notes you selected. The worksheet card I just emitted is built from those notes: it covers the core parameters, forward/reverse processes, posterior distributions, training losses, and sampling strategies (DDPM vs. DDIM vs. Improved DDPM) that are all laid out in that file.\n\nFeel free to tweak the focus, difficulty, or question count on the card, then hit Generate. Let me know if you'd like me to adjust anything!",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "ok worksheet time, 6 problems on the forward process",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 3.8,
+   "text": "<function_calls>\n<invoke name=\"generate_assessment\">\n<parameter name=\"type\">assessment</parameter>\n<parameter name=\"title\">DDPM Forward Process — 6-Problem Worksheet</parameter>\n<parameter name=\"description\">6 focused problems on the DDPM forward process from 06_diffusion_ddpm_ddim_notes.pdf: noise schedules (α_t, β_t, ᾱ_t), iterative vs. closed-form jumps, signal retention, SNR calculations, and isolating the clean image. Mix of derivation, calculation, and conceptual reasoning. Advanced level.</parameter>\n<parameter name=\"params\">{\n  \"topic\": \"DDPM Forward Process\",\n  \"assessment_type\": \"worksheet\",\n  \"question_count\": 6,\n  \"question_types\": [\"short_answer\"],\n  \"level\": \"advanced\",\n  \"language\": \"en\"\n}</parameter>\n</invoke>\n</function_calls>\n\nDone — a 6-problem worksheet focused entirely on the forward process: noise schedules, iterative vs. closed-form jumps, signal retention, SNR, and recovering the clean image. Adjust anything on the card and hit Generate.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "add a small hint under each problem",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 2.9,
+   "text": "<function_calls>\n<invoke name=\"refine_assessment\">\n<parameter name=\"instruction\">Add a small, one-line hint beneath each of the 6 problems. Hints should point toward the relevant formula, concept, or approach without giving away the answer. For example, hints like 'Think about the product of α_i terms', 'Use the closed-form distribution', 'SNR relates signal to noise variance', etc.</parameter>\n<parameter name=\"summary\">Added one-line hints under each problem</parameter>\n</invoke>\n</function_calls>\n\nOn it — adding a one-line hint under each problem to guide students toward the right formula or concept without spoiling the answer. Updating the worksheet now.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 5,
+   "prompt": "now an answer key",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 3.1,
+   "text": "<function_calls>\n<invoke name=\"refine_assessment\">\n<parameter name=\"instruction\">Generate a complete answer key for all 6 problems. For each problem, provide: (1) the final answer or key result; (2) a brief worked solution showing the main steps, formulas used, and reasoning; (3) any important notes or common mistakes to watch for. Ground all solutions in the formulas and concepts from 06_diffusion_ddpm_ddim_notes.pdf (noise schedules α_t, β_t, ᾱ_t, forward process distributions, SNR, closed-form jumps, signal retention, clean image isolation).</parameter>\n<parameter name=\"summary\">Generated complete answer key with worked solutions</parameter>\n</invoke>\n</function_calls>\n\nOn it — building a full answer key with worked solutions, key results, and common pitfalls for all 6 problems. Updating now.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "which sources did u use in the end",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 2.9,
+   "text": "I used **06_diffusion_ddpm_ddim_notes.pdf** — the file you selected and attached. That's the only source I grounded the worksheet and answer key in. All 6 problems and their solutions draw from the forward process section of that file: noise schedules (α_t, β_t, ᾱ_t), iterative vs. closed-form jumps, signal retention, SNR calculations, and clean image isolation.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  }
+ ]
+}

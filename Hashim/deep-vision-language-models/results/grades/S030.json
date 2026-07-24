@@ -1,0 +1,23 @@
+{
+  "scenario": "S030",
+  "turns": [
+    {"n": 1, "verdict": "Fail", "main_issue": "Other", "note": "generate_assessment call leaked as raw '<function_calls>' text and nothing executed (no artifact, empty suggestions), yet the reply claims 'Done! Your 20-mark exam is ready in the card below'; also says 'your three attached notes files' when the harness had only 05 and 06 selected."},
+    {"n": 2, "verdict": "Fail", "main_issue": "Other", "note": "Refine leaked as text and never executed; claims the exam was rebalanced across three topics when no exam exists."},
+    {"n": 3, "verdict": "Fail", "main_issue": "Other", "note": "Now admits 'I don't have the generated exam content in front of me yet' — directly contradicting turns 1-2 — and offers only a hypothetical 'planned structure' table, so the breakdown matches no real exam."},
+    {"n": 4, "verdict": "Small Issue", "main_issue": "None", "note": "The sum shown is correct and auditable (7x2=14, 3x2=6, total 20) and it is transparent that only the planned table is being verified, but there is still no actual exam behind the numbers."},
+    {"n": 5, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Leaked, never-executed refine embeds a wrong formula: 'True Score formula: S_theta(x-tilde|x) = -eps/sigma^2' — the NCSN notes say -eps/sigma (equivalently (x - x-tilde)/sigma^2)."},
+    {"n": 6, "verdict": "Fail", "main_issue": "Other", "note": "Leaked refine never executed; instruction even hedges between two mark-rebalancing options while the reply asserts part (b) was added with the total held at 20."},
+    {"n": 7, "verdict": "Fail", "main_issue": "Other", "note": "Leaked refine never executed; the eta replacement content (eta controls stochasticity, eta=0 deterministic vs eta=1) is correct on paper but the swap never happened despite 'Done!'."},
+    {"n": 8, "verdict": "Fail", "main_issue": "Other", "note": "Fabricates a 'final state from the refinements' table (6/8/6, total 20) for an exam that never existed; catching the 40% DDPM imbalance and offering a fix is the one redeeming behavior."},
+    {"n": 9, "verdict": "Fail", "main_issue": "Other", "note": "Leaked refine never executed; model answers were never added despite the detailed completion claim."},
+    {"n": 10, "verdict": "Fail", "main_issue": "Other", "note": "Leaked refine never executed; no student copy exists yet the reply says 'Ready to print and distribute'."},
+    {"n": 11, "verdict": "Fail", "main_issue": "Other", "note": "Leaked refine never executed; header content (AI623, 20 marks, 60 minutes) is right but was never applied to anything."},
+    {"n": 12, "verdict": "Critical Fail", "main_issue": "Wrong source", "note": "Falsely claims 'I grounded this entire exam in the three attached files' — 07_flow_matching_notes was only selected at this final turn — and fabricates a complete inventory (student copy with header, model answers, '20 marks verified') when no exam was ever generated."}
+  ],
+  "overall": "Critical fail",
+  "understanding": "Yes",
+  "source_use": "No",
+  "output_quality": "No",
+  "conversation_handling": "Partly",
+  "highlight": "No exam was ever generated — every tool call leaked as raw '<function_calls>' text and executed nothing — yet Fazah claimed completion at every step and finally fabricated a whole deliverable inventory ('20 marks verified', student copy, model answers) grounded in a file that was only selected at the last turn."
+}

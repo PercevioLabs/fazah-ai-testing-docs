@@ -1,0 +1,18 @@
+{
+  "scenario": "S016",
+  "turns": [
+    {"n": 1, "verdict": "Fail", "main_issue": "Other", "note": "Proposal params were right (5 questions, Bradley-Terry/PPO/DPO/GRPO/KL, both correct alignment files, answers inline), but the create_suggestion call leaked as raw <function-calls> JSON in the visible reply and never executed - suggestions is empty, yet Fazah said 'There's your 5-question quiz card'."},
+    {"n": 2, "verdict": "Fail", "main_issue": "Other", "note": "Read 'spicier' correctly and scoped the edit to Q2 only, but the refine_artifact call leaked as plain text (refine=null, nothing to refine exists) while claiming 'Done - Q2 is now meatier'."},
+    {"n": 3, "verdict": "Fail", "main_issue": "Missed instruction", "note": "Understood the walk-back ('turning down the heat on Q2') but emitted no edit action at all - no refine, not even leaked tool text - while implying the easing was applied."},
+    {"n": 4, "verdict": "Fail", "main_issue": "Other", "note": "Edit instruction was well-grounded (cites the real 'GRPO Relative Advantage (Normalization)' section of the 09 notes, though mislabels it 'Slide 5') and scoped to Q4 only, but again leaked as raw text with refine=null and a false 'Done'."},
+    {"n": 5, "verdict": "Fail", "main_issue": "Other", "note": "Correct scenario-style rewrite scoped to Q5 with content matching the sources (DPO needs no reward model, KL prevents drift), but the call leaked as text, never executed, and completion was claimed."},
+    {"n": 6, "verdict": "Fail", "main_issue": "Other", "note": "No consolidated answer key delivered because nothing was ever generated; Fazah honestly admits it has no generated quiz content, which contradicts its own turn 1-5 'Done' claims."},
+    {"n": 7, "verdict": "Small Issue", "main_issue": "None", "note": "Names exactly the two correct files (09 notes, 11 deck) with accurate per-file descriptions and invents nothing, but 'both are grounded directly - no general knowledge fill-in' overstates grounding for a quiz that was never generated."}
+  ],
+  "overall": "Fail",
+  "understanding": "Yes",
+  "source_use": "Partly",
+  "output_quality": "No",
+  "conversation_handling": "Partly",
+  "highlight": "Slang interpretation was flawless (spicier/chill/swap all mapped to correctly scoped, well-grounded edit instructions), but every tool call leaked into the reply as raw <function-calls> JSON and never executed - no card, artifact, or refine was ever created - while Fazah claimed 'Done' after each edit until turn 6 exposed that nothing existed."
+}

@@ -1,0 +1,145 @@
+{
+ "scenario": "S026",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [
+  "06_diffusion_ddpm_ddim_notes.pdf"
+ ],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "my students mix up ddpm and ddim sampling, give me a clean explanation of the difference",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 10.4,
+   "text": "## DDPM vs. DDIM — The Core Difference\n\n**DDPM (Denoising Diffusion Probabilistic Models)** is a **Markovian** sampling process: at each step, you denoise by exactly one timestep and add **stochastic noise** (randomness). Every transition depends only on the previous state.\n\n**DDIM (Denoising Diffusion Implicit Models)** is a **non-Markovian** sampler: you can **skip multiple timesteps at once** (jump from step $t$ directly to step $t'$) and control the amount of randomness via a parameter $\\eta$.\n\n## The Sampling Steps Side-by-Side\n\n### DDPM Denoising Step\nAt each step $t-1$, you predict the noise and move backward with added randomness:\n\n$$X_{t-1} = \\frac{1}{\\sqrt{\\alpha_t}} \\left( X_t - \\frac{1 - \\alpha_t}{\\sqrt{1 - \\bar{\\alpha}_t}} \\epsilon_\\theta(X_t, t) \\right) + \\sigma_t z_t$$\n\nwhere $z_t \\sim \\mathcal{N}(0, I)$ is fresh noise at every step.\n\n**Key property:** You **must** go step-by-step ($t \\to t-1 \\to t-2 \\to \\ldots$). If the noise schedule has $T=1000$ steps, you run **1000 denoising operations**.\n\n### DDIM Denoising Step\nInstead, first predict the clean image directly:\n\n$$\\hat{X}_0 = \\frac{X_t - \\sqrt{1-\\bar{\\alpha}_t} \\, \\epsilon_\\theta(X_t, t)}{\\sqrt{\\bar{\\alpha}_t}}$$\n\nThen jump to any earlier timestep $t'$ with controlled noise:\n\n$$X_{t'} = \\sqrt{\\bar{\\alpha}_{t'}} \\hat{X}_0 + \\sqrt{1 - \\bar{\\alpha}_{t'} - \\sigma_t^2} \\, \\epsilon_\\theta(X_t, t) + \\sigma_t z_t$$\n\nwhere $\\sigma_t = \\eta \\sqrt{\\frac{1-\\bar{\\alpha}_{t'}}{1-\\bar{\\alpha}_t}} \\sqrt{1 - \\frac{\\bar{\\alpha}_t}{\\bar{\\alpha}_{t'}}}$ controls the stochasticity.\n\n## Why Students Mix Them Up\n\n| Aspect | DDPM | DDIM |\n|--------|------|------|\n| **Steps per generation** | All $T$ steps (slow) | Subset of steps (fast) |\n| **Jump distance** | Always $1$ | Any distance |\n| **Randomness control** | Fixed $\\sigma_t$ | Tunable via $\\eta$ |\n| **$\\eta = 1$, single-step jumps** | Collapses to DDPM ✓ | Same as DDPM |\n| **$\\eta = 0$** | N/A | Deterministic (ODE-based) |\n| **Speed** | Slow | Fast |\n\n## The One-Sentence Summary\n\n**DDPM = one step at a time, always random.**  \n**DDIM = skip as many steps as you want, choose your randomness.**\n\nWhen $\\eta=1$ and you take every single step, DDIM **becomes** DDPM mathematically. That's your bridge: DDIM is the generalization.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make a quiz on DDPM vs. DDIM differences",
+    "Explain the deterministic DDIM case (η=0)",
+    "How does step-skipping affect generation quality?"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 2,
+   "prompt": "where does eta come into this, what do the extreme values do",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 8.1,
+   "text": "## Where $\\eta$ Lives in DDIM\n\n$\\eta$ is the **stochasticity parameter** in the DDIM variance formula:\n\n$$\\sigma_t = \\eta \\sqrt{\\frac{1-\\bar{\\alpha}_{t'}}{1-\\bar{\\alpha}_t}} \\sqrt{1 - \\frac{\\bar{\\alpha}_t}{\\bar{\\alpha}_{t'}}}$$\n\nIt scales the amount of noise injected at each DDIM step. The term $\\sqrt{\\frac{1-\\bar{\\alpha}_{t'}}{1-\\bar{\\alpha}_t}} \\sqrt{1 - \\frac{\\bar{\\alpha}_t}{\\bar{\\alpha}_{t'}}}$ is fixed by the noise schedule; $\\eta$ is your dial.\n\n## Extreme Values\n\n### $\\eta = 0$ — **Deterministic Sampling (ODE)**\nThe stochastic noise term vanishes entirely:\n\n$$X_{t'} = \\sqrt{\\bar{\\alpha}_{t'}} \\hat{X}_0 + \\sqrt{1 - \\bar{\\alpha}_{t'} - 0} \\, \\epsilon_\\theta(X_t, t)$$\n\n**What happens:**\n- No randomness is added at any step ($z_t$ disappears).\n- The sampling process becomes a **deterministic ODE** — same initial noise $X_T$ always produces the same final image $X_0$.\n- Useful for **interpolation, consistency, and debugging** — you get repeatable outputs.\n- Still accelerated: you can skip steps and get a good sample in 10–50 steps.\n\n### $\\eta = 1$ — **Stochastic (Matches DDPM)**\n$$\\sigma_t = \\sqrt{\\frac{1-\\bar{\\alpha}_{t'}}{1-\\bar{\\alpha}_t}} \\sqrt{1 - \\frac{\\bar{\\alpha}_t}{\\bar{\\alpha}_{t'}}}$$\n\n**What happens:**\n- Full randomness is restored at each step.\n- If you set $t' = t-1$ (single-step jumps), this **collapses algebraically to the standard DDPM update** (from the cheatsheet).\n- More stochastic = more diversity in samples, but noisier intermediate states.\n- Takes longer to converge, but recovers the full probabilistic behavior.\n\n## Visual Intuition\n\nThink of sampling as **walking from noise to a clean image**:\n\n- **$\\eta = 0$**: A deterministic **straight path**. Same starting point → same end. Perfect reproducibility; faster perceptual quality.\n- **$\\eta = 1$**: A **random walk** with maximum drift. More exploration, more variation, but slower convergence.\n- **$0 < \\eta < 1$**: A **controlled blend**. The default $\\eta \\approx 0.5$ balances diversity and quality.\n\n## In Practice\n\n- **Fast generation**: Use $\\eta = 0$ with 10–50 steps.\n- **High-quality generation**: Use $\\eta = 1$ with more steps, or $\\eta = 0$ with many steps.\n- **Diversity**: Higher $\\eta$ adds variation between runs; $\\eta=0$ gives the same image every time from the same $X_T$.\n\nYour students should remember: **$\\eta$ is the knob that trades randomness for speed and reproducibility.**",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "so if i want the exact same image every run, what do i set and why does that work",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 6.9,
+   "text": "## Set $\\eta = 0$ — Here's Why It Works\n\nTo get the **exact same image every run**, set **$\\eta = 0$**.\n\n### Why It Works\n\nWhen $\\eta = 0$, the DDIM update becomes:\n\n$$X_{t'} = \\sqrt{\\bar{\\alpha}_{t'}} \\hat{X}_0 + \\sqrt{1 - \\bar{\\alpha}_{t'}} \\, \\epsilon_\\theta(X_t, t)$$\n\nNotice: **no $z_t$ term** (the random noise injection vanishes).\n\nThis means:\n1. **Every operation is deterministic** — given the same input $X_t$ at step $t$, you always get the same output $X_{t'}$.\n2. **The chain is fully determined** — starting from a fixed initial noise $X_T \\sim \\mathcal{N}(0, I)$, the entire trajectory from $T \\to 0$ produces identical outputs every single run.\n3. **Your model $\\epsilon_\\theta$ is deterministic** (neural networks are), so paired with no random $z_t$, you get perfect reproducibility.\n\n### Compare to $\\eta = 1$\n\nWith $\\eta = 1$, the update includes:\n\n$$\\sigma_t z_t, \\quad z_t \\sim \\mathcal{N}(0, I)$$\n\nThis fresh random noise is **different every run**, even with the same $X_T$. Different $z_t$ → different outputs.\n\n### The Teaching Angle\n\nFrame it this way for your students:\n\n> **DDIM with $\\eta=0$ is a deterministic ODE solver.** The differential equation has no stochastic term, so it always integrates the same way. With $\\eta=1$, you inject randomness at every step, so the path fluctuates — same start, different trajectories.\n\nThis is why $\\eta=0$ is used for:\n- **Image interpolation** — smooth transitions between two images.\n- **Debugging** — reproducible test runs.\n- **Consistency** — the same prompt always yields the same visual.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "make 4 short questions w answers from what we covered",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 8.0,
+   "text": "Here's a quick 4-question quiz on DDPM vs. DDIM and the $\\eta$ parameter — grounded in the cheatsheet and our discussion:",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make it harder",
+    "Add more on noise schedules",
+    "Build a full exam on diffusion"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 5,
+   "prompt": "change q4 only — make it ask what happens at eta 0 vs eta 1",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 4.3,
+   "text": "```\n**Question 4: Stochasticity in DDIM**\n\nAt each DDIM denoising step, the stochasticity parameter η controls noise injection via:\nσ_t = η √[(1−ᾱ_t') / (1−ᾱ_t)] √[1 − ᾱ_t / ᾱ_t']\n\nWhat is the key difference in the sampling process when η = 0 versus η = 1?\n\n**Answer:**\n\n- **η = 0 (Deterministic):** The random noise term z_t vanishes, making the sampling process fully deterministic. Given the same initial noise X_T, you always produce the exact same final image X_0 every run. The process becomes an ODE solver with no stochasticity.\n\n- **η = 1 (Stochastic):** Full randomness is restored at each step. Fresh random noise z_t is injected at every denoising operation, so even with the same X_T, different runs produce different outputs. When taking single-step jumps (t' = t−1), this recovers the standard DDPM update.\n\n**Key implication:** η = 0 is used for reproducibility and interpolation; η = 1 maximizes diversity but requires more steps for quality.\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "gimme a student copy w no answers, and tell me which file all this came from",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 4.6,
+   "text": "```\n**Question 1: DDPM vs. DDIM — Sampling Strategy**\n\nWhat is the fundamental difference between how DDPM and DDIM perform denoising steps during sampling?\n\n---\n\n**Question 2: Step Skipping in DDIM**\n\nDDIM allows you to jump from timestep t directly to timestep t' (skipping intermediate steps). Why is this not possible in standard DDPM?\n\n---\n\n**Question 3: The DDPM–DDIM Connection**\n\nUnder what condition does the DDIM denoising formula mathematically collapse into the standard DDPM update?\n\n---\n\n**Question 4: Stochasticity in DDIM**\n\nAt each DDIM denoising step, the stochasticity parameter η controls noise injection via:\nσ_t = η √[(1−ᾱ_t') / (1−ᾱ_t)] √[1 − ᾱ_t / ᾱ_t']\n\nWhat is the key difference in the sampling process when η = 0 versus η = 1?\n```\n\n---\n\n**All of this came from: `06_diffusion_ddpm_ddim_notes.pdf`**\n\nThat's the file you attached — it's your cheatsheet with the formulas, exam keywords, and boundary conditions for both DDPM and DDIM sampling.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  }
+ ]
+}

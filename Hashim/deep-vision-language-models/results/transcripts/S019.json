@@ -1,0 +1,266 @@
+{
+ "scenario": "S019",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "make a quiz from these slides",
+   "selection": [],
+   "latency_s": 14.1,
+   "text": "Got it — which materials should I draw from for the quiz?",
+   "source_mode": "course_metadata",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 2,
+   "prompt": "oh right lol, the ppo dpo grpo deck",
+   "selection": [
+    "11_ppo_dpo_grpo_alignment.pptx"
+   ],
+   "latency_s": 4.4,
+   "text": "Building a quiz from the PPO, DPO, GRPO alignment deck — one quick choice:",
+   "source_mode": "file",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "ok 5 questions",
+   "selection": [
+    "11_ppo_dpo_grpo_alignment.pptx"
+   ],
+   "latency_s": 4.3,
+   "text": "Here's a 5-question quiz on PPO, DPO, and GRPO alignment methods — mix of MCQs and short answers covering the pipeline, key differences, and implementation details.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make it harder",
+    "Add more questions on DPO",
+    "Focus on key differences only"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": [
+    {
+     "title": "PPO, DPO, GRPO Alignment Methods Quiz",
+     "type": "assessment",
+     "params": {
+      "topic": "PPO, DPO, GRPO Alignment",
+      "assessment_type": "quiz",
+      "question_count": 5,
+      "question_types": [
+       "mcq",
+       "short_answer"
+      ],
+      "language": "en",
+      "level": "advanced"
+     }
+    }
+   ],
+   "artifact": {
+    "assessment_id": "9af33e87-efa8-49bd-9f99-2a237b3140dc",
+    "status": "completed",
+    "latency_s": 39.3,
+    "title": "AI623 Quiz: PPO, DPO, GRPO Alignment Methods",
+    "question_total": 5,
+    "marks_total": 20,
+    "types": [
+     "mcq",
+     "short_answer"
+    ],
+    "questions": [
+     {
+      "n": 1,
+      "type": "mcq",
+      "marks": 4,
+      "text": "In the LLM Alignment Pipeline, which component is trained using human preference data to score model outputs?"
+     },
+     {
+      "n": 2,
+      "type": "mcq",
+      "marks": 4,
+      "text": "A researcher has collected pairwise preference data from human annotators but does not have the computational resources to train and maintain a separate reward model. Which alignment method would be most suitable for this scenario?"
+     },
+     {
+      "n": 3,
+      "type": "mcq",
+      "marks": 4,
+      "text": "Which statement best explains why PPO requires more model components than either DPO or GRPO?"
+     },
+     {
+      "n": 4,
+      "type": "short_answer",
+      "marks": 4,
+      "text": "Explain the key difference between how GRPO and PPO handle advantage estimation without requiring the same set of supporting models."
+     },
+     {
+      "n": 5,
+      "type": "short_answer",
+      "marks": 4,
+      "text": "Consider an LLM alignment scenario where computational efficiency is critical. Discuss how the use of LoRA and PEFT techniques could enable practical deployment of any of the three methods (PPO, DPO, GRPO). What aspect of the alignment pipeline does PEFT primarily optimize?"
+     }
+    ],
+    "answer_key": [
+     {
+      "n": 1,
+      "answer": "A"
+     },
+     {
+      "n": 2,
+      "answer": "B"
+     },
+     {
+      "n": 3,
+      "answer": "A"
+     },
+     {
+      "n": 4,
+      "answer": "GRPO avoids the need for a critic model by sampling multiple outputs per prompt and normalizing rewards relative to the group statistics. Instead of learning a separate value function like PPO's critic, GRPO uses the relative ordering and reward distribution within the generated group to estimate ad"
+     },
+     {
+      "n": 5,
+      "answer": "LoRA and PEFT techniques enable efficient implementation of all three methods by reducing the number of trainable parameters during fine-tuning. Rather than updating all weights in the full models (policy, reference, reward, critic), PEFT selectively updates a small subset of parameters (low-rank ad"
+     }
+    ]
+   }
+  },
+  {
+   "n": 4,
+   "prompt": "make one of them specifically about which models each method needs",
+   "selection": [
+    "11_ppo_dpo_grpo_alignment.pptx"
+   ],
+   "latency_s": 6.0,
+   "text": "On it — rewriting one question to focus specifically on the model components each method requires. Updating it in the panel now.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make it harder",
+    "Add 5 more questions",
+    "Focus on DPO only"
+   ],
+   "clarify": null,
+   "refine": {
+    "artifact_id": "9af33e87-efa8-49bd-9f99-2a237b3140dc",
+    "artifact_type": "assessment",
+    "assessment_id": "9af33e87-efa8-49bd-9f99-2a237b3140dc",
+    "instruction": "Replace Q3 (the third MCQ about why PPO requires more components) with a new question that directly tests which specific models are needed for each alignment method. The question should present a scenario or comparison format that makes students identify: PPO needs policy, reference, reward, and critic; DPO needs policy and reference only (no reward model); GRPO needs policy and reference only (no critic model). Keep it at 4 marks, MCQ format, with options that clearly distinguish between the three methods' model requirements.",
+    "summary": "Rewrote Q3 to directly test model components required by each alignment method (PPO vs. DPO vs. GRPO)"
+   },
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 5,
+   "prompt": "add answers",
+   "selection": [
+    "11_ppo_dpo_grpo_alignment.pptx"
+   ],
+   "latency_s": 4.1,
+   "text": "Added detailed answer key to the quiz. Each answer now includes the rationale and key concepts tested.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make it harder",
+    "Add more questions on score-based models",
+    "Create a practice test version"
+   ],
+   "clarify": null,
+   "refine": {
+    "artifact_id": "9af33e87-efa8-49bd-9f99-2a237b3140dc",
+    "artifact_type": "assessment",
+    "assessment_id": "9af33e87-efa8-49bd-9f99-2a237b3140dc",
+    "instruction": "Add a complete answer key to all 5 questions. For MCQs, state the correct letter and briefly explain why it's correct and why the distractors are wrong. For short-answer questions, provide a model answer (3-5 sentences) that demonstrates full understanding of the concept, with key terms bolded.",
+    "summary": "Added comprehensive answer key with explanations"
+   },
+   "intent": {
+    "type": "artifact_revision",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "student version without the answers pls",
+   "selection": [
+    "11_ppo_dpo_grpo_alignment.pptx"
+   ],
+   "latency_s": 4.1,
+   "text": "Creating a student version without the answer key — removing answers and rubric now.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": {
+    "artifact_id": "9af33e87-efa8-49bd-9f99-2a237b3140dc",
+    "artifact_type": "assessment",
+    "assessment_id": "9af33e87-efa8-49bd-9f99-2a237b3140dc",
+    "instruction": "Remove the entire [Answer key] and [Rubric] sections from the quiz. Keep all questions (Q1–Q5) exactly as they are, with marks clearly labeled. Present only the question text and answer fields for students to fill in.",
+    "summary": "Removed answer key and rubric for student distribution"
+   },
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 7,
+   "prompt": "confirm which slides u used for this quiz",
+   "selection": [
+    "09_ar_alignment_rlhf_notes.pdf",
+    "11_ppo_dpo_grpo_alignment.pptx"
+   ],
+   "latency_s": 5.2,
+   "text": "```\nI grounded this quiz in the selected slides from 11_ppo_dpo_grpo_alignment.pptx:\n\n• **Slide 3** — The LLM Alignment Pipeline (reward model, policy optimization, KL divergence)\n• **Slide 4** — PPO specifics (separately trained reward model, policy/reference/reward/critic models, most complex)\n• **Slide 5** — DPO and GRPO distinctions (DPO: no reward model; GRPO: no critic model, group sampling)\n• **Slide 6** — Summary comparison (model requirements, LoRA/PEFT efficiency)\n\nThe quiz questions directly target the core differentiators: which models each method needs, why DPO bypasses the reward model, and how GRPO uses group normalization instead of a critic — all explicitly covered in those slides.\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  }
+ ]
+}

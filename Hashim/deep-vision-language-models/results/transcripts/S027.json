@@ -1,0 +1,169 @@
+{
+ "scenario": "S027",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [
+  "07_flow_matching_notes.pdf"
+ ],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "explain ve vs vp sdes — whats the drift and diffusion in each",
+   "selection": [
+    "07_flow_matching_notes.pdf"
+   ],
+   "latency_s": 10.4,
+   "text": "## VE-SDE vs VP-SDE: Drift and Diffusion\n\nBoth SDEs model the forward diffusion process, but they differ fundamentally in how they add noise and control the trajectory.\n\n### VE-SDE (Variance Exploding — used in NCSN)\n\n**Drift:** \\( f(x,t) = 0 \\)\n\n**Diffusion:** \\( g(t) = \\sqrt{\\frac{d\\sigma(t)^2}{dt}} \\)\n\n**What it means:** The VE-SDE has **zero drift** — the particle does not experience any systematic \"pull\" back toward the origin. Instead, noise is *injected* at a rate controlled by the time-dependent noise schedule \\( \\sigma(t) \\). The particle wanders randomly without any restoring force.\n\n**When to use:** When you want pure noise injection with no mean reversion. The noise grows unbounded as \\( t \\to 1 \\), hence \"Variance Exploding.\" Clean data starts at low noise; as time increases, variance explodes.\n\n---\n\n### VP-SDE (Variance Preserving — used in DDPM)\n\n**Drift:** \\( f(x,t) = -\\frac{1}{2}\\beta(t)x_t \\)\n\n**Diffusion:** \\( g(t) = \\sqrt{\\beta(t)} \\)\n\n**What it means:** The VP-SDE has a **negative drift term** (the \\( -\\frac{1}{2}\\beta(t)x_t \\) part). This drift pulls the particle **toward the origin**, dampening its motion. Meanwhile, noise is injected at a rate \\( \\sqrt{\\beta(t)} \\) determined by the schedule \\( \\beta(t) \\). The two effects balance: as you add noise, the drift simultaneously shrinks the magnitude of the current state, keeping the overall variance controlled.\n\n**When to use:** When you want stable, bounded noise growth. The marginal variance stays roughly constant throughout the diffusion process, making the trajectory more numerically stable and predictable.\n\n---\n\n### Side-by-Side Comparison\n\n| Aspect | VE-SDE | VP-SDE |\n|--------|--------|--------|\n| **Drift** | None (0) | Negative (pulls toward origin) |\n| **Diffusion** | \\( \\sqrt{\\frac{d\\sigma(t)^2}{dt}} \\) | \\( \\sqrt{\\beta(t)} \\) |\n| **Variance over time** | Explodes unbounded | Preserved (controlled) |\n| **Stability** | Less stable numerically | More stable |\n| **Used in** | NCSN (score-based) | DDPM (diffusion models) |\n\n**Practical takeaway:** VE lets noise run wild; VP keeps it in check via mean reversion. For a homework or exam problem, identify \\( \\beta(t) \\) or \\( \\sigma(t) \\) in the problem statement — if there's a multiplicative decay term on \\( x_t \\), it's VP; if there's only noise injection with no decay, it's VE.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Write the reverse SDE for each",
+    "Show me a step of Euler-Maruyama for VP",
+    "When would I use VE over VP?"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 2,
+   "prompt": "and the reverse sde that generates samples?",
+   "selection": [
+    "07_flow_matching_notes.pdf"
+   ],
+   "latency_s": 8.7,
+   "text": "## The Reverse SDE (Generating Samples)\n\nThe **Reverse SDE** runs **backward in time** — starting from pure noise at \\( t=1 \\) and denoising down to clean data at \\( t=0 \\).\n\n### The Formula\n\n$$dx_t = \\left[f(x,t) - g(t)^2 \\nabla_x \\log P_t(x)\\right]dt + g(t)d\\bar{w}_t$$\n\n**Breaking it down:**\n\n| Component | Meaning |\n|-----------|---------|\n| \\( f(x,t) \\) | The **drift from the forward process** (unchanged). For VE it's 0; for VP it's \\( -\\frac{1}{2}\\beta(t)x_t \\). |\n| \\( -g(t)^2 \\nabla_x \\log P_t(x) \\) | The **score-based denoising term**. The score \\( \\nabla_x \\log P_t(x) \\) points toward high-probability regions. Multiply by \\( -g(t)^2 \\) to create a drift that **pulls the particle away from noise toward data**. |\n| \\( \\nabla_x \\log P_t(x) \\approx S_\\theta(x,t) \\) | You **replace the true score** (which you don't know) with a **learned score network** \\( S_\\theta \\). This is what you train. |\n| \\( g(t)d\\bar{w}_t \\) | **Reverse-time Brownian motion** — stochastic noise added at each step to maintain the correct probability distribution. |\n\n### Intuition\n\n**Forward process (noising):**\n- Start with clean data, add noise systematically\n\n**Reverse process (denoising):**\n- Start with pure noise\n- At each step, the score network predicts: *\"In which direction should I move to reach high-probability data regions?\"*\n- The \\( -g(t)^2 \\nabla_x \\log P_t(x) \\) term applies that guidance\n- The stochastic term \\( g(t)d\\bar{w}_t \\) adds controlled randomness to explore the full data distribution (not just a point estimate)\n\n### Critical Trap ⚠️\n\n**This is a continuous formula.** If you're given a finite time step \\( \\Delta t \\) and asked to calculate an actual numerical update, you **must discretize** using the **Euler-Maruyama predictor** (Slide 2, Formula 3) or the **ODE sampler** (Formula 5), not plug in numbers directly into this SDE.\n\n### Example: VP-SDE Reverse\n\nFor VP (DDPM forward with drift \\( f = -\\frac{1}{2}\\beta(t)x_t \\) and diffusion \\( g = \\sqrt{\\beta(t)} \\)):\n\n$$dx_t = \\left[-\\frac{1}{2}\\beta(t)x_t - \\beta(t)S_\\theta(x_t, t)\\right]dt + \\sqrt{\\beta(t)}d\\bar{w}_t$$\n\nThe drift pulls toward the origin **and** the learned score pulls toward data — working together to guide the sample.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "ok give me the predictor step we actually compute",
+   "selection": [
+    "07_flow_matching_notes.pdf"
+   ],
+   "latency_s": 8.1,
+   "text": "## The Predictor Step (Euler-Maruyama Discretization)\n\nThis is what you **actually implement** in code to generate one step of a sample.\n\n### The Formula\n\n$$x_{i-1} = x_i - \\left[f(x_i, t_i) - \\frac{1}{2}g(t_i)^2 S_\\theta(x_i, t_i)\\right]\\Delta t + g(t_i)Z_i$$\n\n**Variables:**\n\n| Symbol | Meaning |\n|--------|---------|\n| \\( x_i \\) | Current noisy sample at step \\( i \\) |\n| \\( x_{i-1} \\) | Next sample (one step closer to data, \\( t \\) decreases) |\n| \\( f(x_i, t_i) \\) | **Drift from forward process** (0 for VE; \\( -\\frac{1}{2}\\beta(t)x_i \\) for VP) |\n| \\( S_\\theta(x_i, t_i) \\) | **Learned score network output** — predicts \\( \\nabla_x \\log P_t(x) \\) |\n| \\( g(t_i) \\) | **Diffusion coefficient** at this time step |\n| \\( \\Delta t \\) | **Finite time step size** (usually small, e.g., 0.001) |\n| \\( Z_i \\) | Sampled **standard normal noise** \\( \\mathcal{N}(0, I) \\) |\n\n---\n\n### What's Happening\n\n1. **Deterministic drift:**  \\( -\\left[f(x_i, t_i) - \\frac{1}{2}g(t_i)^2 S_\\theta(x_i, t_i)\\right]\\Delta t \\)\n   - Move based on the learned score and the forward process's drift\n   - The score term pulls toward data; the drift term depends on the SDE type\n\n2. **Stochastic noise:** \\( + g(t_i)Z_i \\)\n   - Add scaled random noise to sample from the full distribution\n   - Without this, you get a single deterministic path, not diversity\n\n---\n\n### Example: VP-SDE (DDPM) Predictor\n\nPlug in \\( f = -\\frac{1}{2}\\beta(t)x_i \\) and \\( g = \\sqrt{\\beta(t)} \\):\n\n$$x_{i-1} = x_i - \\left[-\\frac{1}{2}\\beta(t_i)x_i - \\frac{1}{2}\\beta(t_i)S_\\theta(x_i, t_i)\\right]\\Delta t + \\sqrt{\\beta(t_i)} \\cdot Z_i$$\n\nSimplify:\n\n$$x_{i-1} = x_i + \\frac{1}{2}\\beta(t_i)\\left[x_i + S_\\theta(x_i, t_i)\\right]\\Delta t + \\sqrt{\\beta(t_i)} \\cdot Z_i$$\n\n---\n\n### When to Use This\n\n- **\"Calculate the state at the next step using Euler-Maruyama\"** ✓\n- **\"Execute one Predictor step for the Reverse SDE\"** ✓\n- **\"Given the score network and time step, compute the numerical update\"** ✓\n- **\"Generate a sample\"** ✓ (loop this over all time steps from \\( t=1 \\) down to \\( t=0 \\))\n\nThis is your **sampling algorithm** — the actual code you run.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "and the corrector, what runs between predictor steps",
+   "selection": [
+    "07_flow_matching_notes.pdf"
+   ],
+   "latency_s": 8.1,
+   "text": "# The Corrector Step\n\nThe **Corrector** runs *between* Predictor steps to refine the sample and reduce discretization error. It's part of the **Predictor-Corrector** framework.\n\n### The Formula\n\nThe Corrector is a **Langevin dynamics step** — it moves along the score direction with added noise:\n\n$$x_i \\leftarrow x_i - \\frac{\\epsilon}{2}S_\\theta(x_i, t_i) + \\sqrt{\\epsilon}Z_i$$\n\n**Variables:**\n\n| Symbol | Meaning |\n|--------|---------|\n| \\( x_i \\) | Current sample (updated in-place) |\n| \\( \\epsilon \\) | **Step size for the Corrector** (typically small, e.g., 0.1 × diffusion variance) |\n| \\( S_\\theta(x_i, t_i) \\) | **Learned score network** |\n| \\( Z_i \\) | Sampled **standard normal noise** \\( \\mathcal{N}(0, I) \\) |\n\n---\n\n### What's Happening\n\nThe Corrector **does not change the time step** — it stays at \\( t_i \\). Instead, it:\n\n1. **Moves along the score** \\( -\\frac{\\epsilon}{2}S_\\theta(x_i, t_i) \\)\n   - Pushes the sample toward higher-probability regions at the *current* time level\n   - Reduces noise and corrects Euler discretization error\n\n2. **Adds Langevin noise** \\( +\\sqrt{\\epsilon}Z_i \\)\n   - Maintains proper variance and sampling distribution\n   - Prevents collapse to a single mode\n\n---\n\n### The Predictor-Corrector Loop\n\n```\nfor i in range(num_steps):\n    # Predictor step: move backward in time (t_i → t_{i-1})\n    x_{i-1} = x_i - [drift - score_term] × Δt + g(t_i) × Z_predictor\n    \n    # Corrector steps: refine at the current time level (stay at t_{i-1})\n    for j in range(num_corrector_steps):\n        x_{i-1} = x_{i-1} - (ε/2) × S_θ(x_{i-1}, t_{i-1}) + √ε × Z_corrector\n```\n\n---\n\n### Key Differences: Predictor vs. Corrector\n\n| Aspect | **Predictor** | **Corrector** |\n|--------|------------|-----------|\n| **Time change** | Changes \\( t_i \\to t_{i-1} \\) | Stays at same \\( t \\) |\n| **Uses drift** | Yes (\\( f(x,t) \\)) | No |\n| **Uses diffusion** | Yes (\\( g(t) \\)) | No |\n| **Step size** | \\( \\Delta t \\) (large) | \\( \\epsilon \\) (small) |\n| **Purpose** | Advance denoising | Refine/correct at current level |\n\n---\n\n### When to Use the Corrector\n\n- **\"Refine the sample between time steps\"** ✓\n- **\"Apply Langevin dynamics to reduce discretization error\"** ✓\n- **\"Execute corrector steps in the Predictor-Corrector sampler\"** ✓\n\n**Note:** The corrector is *optional* — you can run just the Predictor for speed, but the Predictor-Corrector framework gives better sample quality with similar computational cost by reusing the score network evaluations.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 5,
+   "prompt": "whats the probability flow ode version and how is its step different",
+   "selection": [
+    "07_flow_matching_notes.pdf"
+   ],
+   "latency_s": 10.4,
+   "text": "## Probability Flow ODE\n\nThe **Probability Flow ODE** is a **deterministic** version of the reverse SDE — it traces a single deterministic path from noise to data, without stochasticity.\n\n### The Continuous Formula\n\n$$\\frac{dx}{dt} = f(x,t) - \\frac{1}{2}g(t)^2\\nabla_x \\log P_t(x)$$\n\n**Compare to the Reverse SDE:**\n\n| Reverse SDE | Probability Flow ODE |\n|------------|----------------------|\n| \\( dx_t = [f(x,t) - g(t)^2\\nabla_x \\log P_t(x)]dt + g(t)d\\bar{w}_t \\) | \\( \\frac{dx}{dt} = f(x,t) - \\frac{1}{2}g(t)^2\\nabla_x \\log P_t(x) \\) |\n| Includes stochastic noise | **Deterministic (no noise)** |\n| Samples from full distribution | Single deterministic trajectory |\n| | **Critical: \\( \\frac{1}{2} \\) multiplier on the score term** |\n\n---\n\n### The Discrete ODE Sampler Step\n\nThis is what you **actually compute**:\n\n$$x_{i-1} = x_i - \\left[f(x_i, t_i) - \\frac{1}{2}g(t_i)S_\\theta(x_i, t_i)\\right]\\Delta t$$\n\n**Variables:**\n\n| Symbol | Meaning |\n|--------|---------|\n| \\( x_i \\) | Current sample at step \\( i \\) |\n| \\( x_{i-1} \\) | Next sample (deterministic update) |\n| \\( f(x_i, t_i) \\) | Drift from forward process |\n| \\( S_\\theta(x_i, t_i) \\) | Learned score network |\n| \\( g(t_i) \\) | Diffusion coefficient |\n| \\( \\Delta t \\) | Time step size |\n| **NO \\( Z_i \\)** | **No random noise term** |\n\n---\n\n### Key Differences: ODE Step vs. Predictor Step\n\n| Aspect | **Predictor (SDE)** | **ODE Sampler** |\n|--------|----------------|-------------|\n| **Formula** | \\( x_{i-1} = x_i - [f - g^2 S_\\theta]\\Delta t + g \\cdot Z_i \\) | \\( x_{i-1} = x_i - [f - \\frac{1}{2}g S_\\theta]\\Delta t \\) |\n| **Score multiplier** | \\( g(t)^2 \\) | \\( \\frac{1}{2}g(t) \\) ⚠️ |\n| **Stochastic noise** | \\( +g(t)Z_i \\) | **None** |\n| **Deterministic?** | No (stochastic) | **Yes** |\n| **Diversity** | Samples varied trajectories | Single fixed path |\n| **Speed** | Slower (needs noise sampling) | Faster (no noise) |\n\n---\n\n### Critical Trap ⚠️\n\n**If the question says \"ODE\" or \"Deterministic\":**\n1. **Halve the score term:** \\( \\frac{1}{2}g(t)S_\\theta \\) instead of \\( g(t)^2 S_\\theta \\)\n2. **Drop the noise:** No \\( Z_i \\) term\n3. **Result:** A single reproducible trajectory, not a distribution\n\n---\n\n### Example: VP-SDE ODE Sampler\n\nVP has \\( f = -\\frac{1}{2}\\beta(t)x_i \\) and \\( g = \\sqrt{\\beta(t)} \\):\n\n$$x_{i-1} = x_i - \\left[-\\frac{1}{2}\\beta(t_i)x_i - \\frac{1}{2}\\sqrt{\\beta(t_i)}S_\\theta(x_i, t_i)\\right]\\Delta t$$\n\nSimplify:\n\n$$x_{i-1} = x_i + \\frac{1}{2}\\beta(t_i)x_i\\Delta t + \\frac{1}{2}\\sqrt{\\beta(t_i)}S_\\theta(x_i, t_i)\\Delta t$$\n\n---\n\n### Why Use ODE Instead of SDE?\n\n- **Faster generation** — no noise sampling overhead\n- **Reproducible** — same input always gives same output\n- **Deterministic solvers** — can use higher-order methods (RK45, etc.)\n- **Trade-off:** Less diversity than stochastic sampling, but still samples from the data distribution\n\n**When to use ODE:** Fast inference, embeddings, likelihood estimation; when you want **one good sample** not **many diverse samples**.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "put it all in one table — ve vs vp, then predictor vs corrector vs ode step",
+   "selection": [
+    "07_flow_matching_notes.pdf"
+   ],
+   "latency_s": 15.5,
+   "text": "## Complete Reference Table: VE vs VP, and All Three Samplers\n\n```\n╔════════════════════════════════════════════════════════════════════════════════════════════════════╗\n║                          FORWARD PROCESS: VE-SDE vs VP-SDE                                        ║\n╠═══════════════════════╦════════════════════════════════════════╦════════════════════════════════════╣\n║ Property              ║ VE-SDE (Variance Exploding)            ║ VP-SDE (Variance Preserving)       ║\n╠═══════════════════════╬════════════════════════════════════════╬════════════════════════════════════╣\n║ Drift f(x,t)          ║ 0 (no restoring force)                 ║ -½β(t)x_t (pulls toward origin)    ║\n║ Diffusion g(t)        ║ √[dσ(t)²/dt]                           ║ √β(t)                              ║\n║ Variance behavior     ║ Explodes unbounded                     ║ Stays roughly constant             ║\n║ Noise schedule        ║ σ(t) (grows with t)                    ║ β(t) (controls decay rate)         ║\n║ Numerical stability   ║ Less stable                            ║ More stable                        ║\n║ Used in               ║ NCSN (score-based models)              ║ DDPM (diffusion models)            ║\n╚═══════════════════════╩════════════════════════════════════════╩════════════════════════════════════╝\n\n╔════════════════════════════════════════════════════════════════════════════════════════════════════╗\n║                    REVERSE SAMPLING: Predictor vs Corrector vs ODE                                ║\n╠═══════════════════════╦════════════════════════════════════════╦═══════════════════════════════════╣\n║ Property              ║ PREDICTOR STEP (SDE)                   ║ CORRECTOR STEP (Langevin)         ║\n╠═══════════════════════╬════════════════════════════════════════╬═══════════════════════════════════╣\n║ Formula               ║ x_{i-1} = x_i                          ║ x_i ← x_i                         ║\n║                       ║  - [f(x_i,t_i)                         ║  - (ε/2)S_θ(x_i,t_i)              ║\n║                       ║     - ½g(t_i)²S_θ(x_i,t_i)] Δt         ║  + √ε · Z_i                       ║\n║                       ║  + g(t_i) · Z_i                        ║                                   ║\n║                       ║ (deterministic + stochastic)           ║ (deterministic + stochastic)      ║\n║ Time change          ║ ✓ Changes t_i → t_{i-1}                ║ ✗ Stays at same t                 ║\n║ Uses drift f(x,t)?   ║ ✓ Yes                                  ║ ✗ No                              ║\n║ Uses diffusion g(t)? ║ ✓ Yes                                  ║ ✗ No                              ║\n║ Score multiplier     ║ g(t)² (full strength)                  ║ ε (small refinement step)         ║\n║ Noise term           ║ + g(t_i) · Z_i                         ║ + √ε · Z_i                       ║\n║ Step size            ║ Δt (large, e.g., 0.001)                ║ ε (small, e.g., 0.1 × variance)   ║\n║ Purpose              ║ Advance denoising (move in time)        ║ Refine/correct at current level   ║\n║ Stochastic?          ║ ✓ Yes                                  ║ ✓ Yes                             ║\n║ Deterministic?       ║ ✗ No                                   ║ ✗ No                              ║\n║ When to use          ║ Main sampling loop                      ║ Between Predictor steps (optional)║\n║ Code structure       ║ for i in range(num_steps):             ║ for j in range(num_corrector_steps)║\n║                       ║   x_{i-1} = predictor(x_i)             ║   x_i = corrector(x_i)            ║\n╠═══════════════════════╬════════════════════════════════════════╬═══════════════════════════════════╣\n║                       ║              ODE SAMPLER STEP (Deterministic)                             ║\n╠═══════════════════════╬════════════════════════════════════════════════════════════════════════════╣\n║ Formula               ║ x_{i-1} = x_i - [f(x_i,t_i) - ½g(t_i)S_θ(x_i,t_i)] Δt                    ║\n║                       ║ ⚠️  Crucial: ½g(t_i) multiplier (NOT g(t_i)²)                             ║\n║ Time change          ║ ✓ Changes t_i → t_{i-1}                                                   ║\n║ Uses drift f(x,t)?   ║ ✓ Yes                                                                     ║\n║ Uses diffusion g(t)? ║ ✓ Yes                                                                     ║\n║ Score multiplier     ║ ½g(t) (HALVED compared to Predictor)                                      ║\n║ Noise term           ║ ✗ None (NO Z_i)                                                           ║\n║ Step size            ║ Δt (same as Predictor)                                                    ║\n║ Purpose              ║ Deterministic denoising trajectory                                         ║\n║ Stochastic?          ║ ✗ No                                                                      ║\n║ Deterministic?       ║ ✓ Yes (reproducible)                                                      ║\n║ Diversity            ║ Single fixed path (no distribution sampling)                               ║\n║ When to use          ║ Fast inference, reproducibility, likelihood estimation                     ║\n║ Trap warning         ║ If question says \"ODE\" or \"Deterministic\": drop noise, halve score term   ║\n╚═══════════════════════╩════════════════════════════════════════════════════════════════════════════╝\n```\n\n---\n\n### Quick Decision Tree\n\n**Given a problem, which one?**\n\n| If the question asks for… | Use… |\n|---------------------------|------|\n| \"One step of reverse SDE\" | **Predictor** |\n| \"Refine between steps\" | **Corrector** |\n| \"Deterministic / ODE / single trajectory\" | **ODE Sampler** |\n| \"Generate diverse samples\" | **Predictor** (loop + Corrector optional) |\n| \"Fast, reproducible generation\" | **ODE Sampler** (loop, no noise) |\n| \"Identify drift and diffusion\" | **VE or VP** (forward process) |",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 7,
+   "prompt": "make 3 exam questions w answers from the table, n tell me which file u used",
+   "selection": [
+    "07_flow_matching_notes.pdf"
+   ],
+   "latency_s": 17.0,
+   "text": "```json",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  }
+ ]
+}

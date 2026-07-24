@@ -1,0 +1,467 @@
+{
+ "scenario": "S010",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [
+  "06_diffusion_ddpm_ddim_notes.pdf"
+ ],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "make a quizz on difussion frm the notes",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 11.5,
+   "text": "Building a 20-question advanced quiz on DDPM & DDIM from your diffusion notes — covering forward process, reverse process, training, and sampling strategies. You can adjust the difficulty, question count, and types on the card.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make it harder — advanced theory questions",
+    "Focus on DDIM vs. DDPM only",
+    "Add more numerical/calculation questions"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": [
+    {
+     "title": "DDPM & DDIM Diffusion Models — Comprehensive Quiz",
+     "type": "assessment",
+     "params": {
+      "topic": "DDPM & DDIM Diffusion Models",
+      "assessment_type": "quiz",
+      "subtopic": "forward process, reverse process, training loss, DDPM sampling, DDIM sampling, variance schedules, noise schedules, SNR, posterior mean & variance",
+      "question_count": 20,
+      "question_types": [
+       "mcq",
+       "short_answer"
+      ],
+      "language": "en",
+      "level": "advanced",
+      "additional_instructions": "Ground all questions in the DDPM/DDIM cheat sheet (06_diffusion_ddpm_ddim_notes.pdf). Include direct computation of cumulative signal retention (αˉt), posterior variance β̃t, closed-form forward jumps (X_t from X_0), DDIM step skipping (X_t' from X_t), and the role of η (stochasticity parameter). Cover boundary conditions, the reparameterization trick, and conceptual distinctions between Markovian (DDPM) and non-Markovian (DDIM) sampling."
+     }
+    }
+   ],
+   "artifact": {
+    "assessment_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "status": "completed",
+    "latency_s": 106.5,
+    "title": "AI623 DDPM & DDIM Diffusion Models — Graduate Assessment",
+    "question_total": 20,
+    "marks_total": 100,
+    "types": [
+     "mcq",
+     "short_answer"
+    ],
+    "questions": [
+     {
+      "n": 1,
+      "type": "mcq",
+      "marks": 5,
+      "text": "In the forward diffusion process, what does the cumulative signal retention schedule ᾱ_t represent?"
+     },
+     {
+      "n": 2,
+      "type": "mcq",
+      "marks": 5,
+      "text": "Which of the following correctly expresses the closed-form forward jump from a clean image X_0 to a noisy image X_t?"
+     },
+     {
+      "n": 3,
+      "type": "mcq",
+      "marks": 5,
+      "text": "What is the relationship between the true posterior variance β̃_t and the noise schedule parameters?"
+     },
+     {
+      "n": 4,
+      "type": "mcq",
+      "marks": 5,
+      "text": "In DDPM training, the simplified objective L_simple(θ) minimizes the L2 norm ||ϵ − ϵ_θ(X_t, t)||²_2. What practical advantage does this simplified loss have over the true ELBO loss L_vlb(t)?"
+     },
+     {
+      "n": 5,
+      "type": "mcq",
+      "marks": 5,
+      "text": "Consider a DDIM sampling step that jumps from timestep t = 64 directly to t' = 16, and suppose ᾱ_64 = 0.81 and ᾱ_16 = 0.25. The model predicts X̂_0 = (X_64 − √(1 − ᾱ_64) ϵ_θ) / √(ᾱ_64). If η = 0 (deterministic DDIM), what is the form of the variance term σ_t that gets added in the DDIM step?"
+     },
+     {
+      "n": 6,
+      "type": "mcq",
+      "marks": 5,
+      "text": "In the true posterior mean formula μ̃_t given X_0 and X_t, what role does the term √(ᾱ_{t-1}) play?"
+     },
+     {
+      "n": 7,
+      "type": "mcq",
+      "marks": 5,
+      "text": "A practitioner observes that sampling with DDIM using η = 1 takes 500 steps and produces good quality images, but they want to speed up generation to 50 steps. Which of the following strategies would best preserve image quality while reducing wall-clock time?"
+     },
+     {
+      "n": 8,
+      "type": "mcq",
+      "marks": 5,
+      "text": "What does the boundary condition X_0 represent in the diffusion process?"
+     },
+     {
+      "n": 9,
+      "type": "mcq",
+      "marks": 5,
+      "text": "Suppose you are designing a diffusion model for a very high-dimensional image space (e.g., 1024 × 1024 × 3) and must choose between large jumps in DDIM (e.g., t to t' = t/10) and small jumps (t to t' = t − 1). What is the primary trade-off you must consider in terms of the DDIM variance and trajectory fidelity?"
+     },
+     {
+      "n": 10,
+      "type": "mcq",
+      "marks": 5,
+      "text": "In the improved DDPM variance interpolation formula Σ_θ = exp(v log β_t + (1 − v) log β̃_t), what does the parameter v control?"
+     },
+     {
+      "n": 11,
+      "type": "mcq",
+      "marks": 5,
+      "text": "During DDPM training, if you isolate the clean image X_0 from a noisy sample X_t using the formula X_0 = (X_t − √(1 − ᾱ_t) ϵ) / √(ᾱ_t), what is the critical assumption about ϵ that must hold for this to be valid?"
+     },
+     {
+      "n": 12,
+      "type": "mcq",
+      "marks": 5,
+      "text": "Consider the Signal-to-Noise Ratio SNR_t = ᾱ_t / (1 − ᾱ_t). As t increases in the forward diffusion process, how does SNR_t evolve, and what does this imply for the model's task of denoising?"
+     },
+     {
+      "n": 13,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "Compute the cumulative signal retention ᾱ_t for a linear noise schedule where α_1 = 0.99, α_2 = 0.98, and α_3 = 0.97. Show all steps."
+     },
+     {
+      "n": 14,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "You have X_t = [−0.5, 0.3, 0.8] (noisy sample), ᾱ_t = 0.64, and ϵ_θ(X_t, t) = [0.1, −0.2, 0.05] (predicted noise). Using the clean-image recovery formula, calculate X̂_0 and explain what this computed value represents in the context of DDPM sampling."
+     },
+     {
+      "n": 15,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "Explain the reparameterization trick: why is it valid to write the closed-form forward jump X_t = √(ᾱ_t) X_0 + √(1 − ᾱ_t) ϵ_t without iterating through all intermediate steps?"
+     },
+     {
+      "n": 16,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "Suppose you compare two sampling strategies: (A) DDPM with all 1000 steps, η = 1, and (B) DDIM with 100 steps, η = 0.5. Discuss the trade-offs: What assumptions does the DDPM sampling make that DDIM relaxes, and how might the stochasticity parameter η in strategy (B) help recover quality lost by step skipping?"
+     },
+     {
+      "n": 17,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "Given that the true posterior variance is β̃_t = β_t(1 − ᾱ_{t-1}) / (1 − ᾱ_t), and assuming a linear schedule with β_t = (T_max − t) / T_max for some T_max, explain qualitatively how β̃_t changes as t increases from 1 to T_max. What does this imply for the variance of the reverse process at different timesteps?"
+     },
+     {
+      "n": 18,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "In DDIM sampling, derive or state the expression for the predicted mean μ̂_t when jumping from X_t to X_{t'}, assuming the intermediate clean prediction X̂_0 and the DDIM variance σ_t are known. Then explain how this formula differs from the DDPM posterior mean formula."
+     },
+     {
+      "n": 19,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "Design an experiment to empirically verify that setting η = 0 in DDIM produces a deterministic (ODE) sampling trajectory, while η = 1 recovers the stochastic DDPM dynamics. What metrics or observations would you measure, and why would the deterministic case be reversible?"
+     },
+     {
+      "n": 20,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "Propose a modification to the standard DDIM variance formula σ_t = η √((1 − ᾱ_t) / (1 − ᾱ_{t'})) √(1 − ᾱ_t / ᾱ_{t'}) that would allow adaptive stochasticity based on the magnitude of the predicted noise ||ϵ_θ||. Justify your design choice with reference to the diffusion process dynamics."
+     }
+    ],
+    "answer_key": [
+     {
+      "n": 1,
+      "answer": "A"
+     },
+     {
+      "n": 2,
+      "answer": "A"
+     },
+     {
+      "n": 3,
+      "answer": "A"
+     },
+     {
+      "n": 4,
+      "answer": "A"
+     },
+     {
+      "n": 5,
+      "answer": "A"
+     },
+     {
+      "n": 6,
+      "answer": "A"
+     },
+     {
+      "n": 7,
+      "answer": "A"
+     },
+     {
+      "n": 8,
+      "answer": "A"
+     },
+     {
+      "n": 9,
+      "answer": "A"
+     },
+     {
+      "n": 10,
+      "answer": "A"
+     },
+     {
+      "n": 11,
+      "answer": "A"
+     },
+     {
+      "n": 12,
+      "answer": "A"
+     },
+     {
+      "n": 13,
+      "answer": "ᾱ_3 = α_1 × α_2 × α_3 = 0.99 × 0.98 × 0.97 ≈ 0.9415. ᾱ_1 = 0.99, ᾱ_2 = 0.99 × 0.98 = 0.9702."
+     },
+     {
+      "n": 14,
+      "answer": "X̂_0 = (X_t − √(1 − ᾱ_t) ϵ_θ) / √(ᾱ_t). With ᾱ_t = 0.64: √(ᾱ_t) = 0.8, √(1 − ᾱ_t) = √0.36 = 0.6. X̂_0 = ([−0.5, 0.3, 0.8] − 0.6 [0.1, −0.2, 0.05]) / 0.8 = ([−0.56, 0.42, 0.77]) / 0.8 ≈ [−0.70, 0.525, 0.9625]. This is the model's intermediate prediction of the original clean image, used by DDIM for a"
+     },
+     {
+      "n": 15,
+      "answer": "The reparameterization trick exploits the fact that if you sum independent Gaussian random variables, the result is also Gaussian with variances that add linearly. Iterating X_t = √(α_t) X_{t-1} + √(1 − α_t) ϵ_t from t = 1 to t produces a sum of scaled Gaussians. Because the variances ∑(1 − α_i) ∏_{"
+     },
+     {
+      "n": 16,
+      "answer": "DDPM assumes a Markovian structure: each step depends only on the immediate previous step, requiring 1000 transitions to reach pure noise. DDIM relaxes this to a non-Markovian (ODE) trajectory, allowing jumps from timestep t directly to t' (here, 100 steps instead of 1000), saving 90% of forward pas"
+     },
+     {
+      "n": 17,
+      "answer": "As t increases, (1 − ᾱ_{t-1}) increases (more cumulative noise), while β_t decreases (less noise added per step). The numerator β_t(1 − ᾱ_{t-1}) initially increases (ᾱ dominates the decrease in β), but the denominator (1 − ᾱ_t) grows faster. Overall, β̃_t tends to decrease as t increases, meaning th"
+     },
+     {
+      "n": 18,
+      "answer": "In DDIM, the mean jump from X_t to X_{t'} is derived from X_{t'} = √(ᾱ_{t'}) X̂_0 + √(1 − ᾱ_{t'} − σ_t²) ϵ_θ(X_t, t) + σ_t z_t, where the mean is the first two terms (deterministic when σ_t = 0). In DDPM, the posterior mean is μ̃_t = √(ᾱ_{t-1}) β_t / (1 − ᾱ_t) X_0 + √(α_t) (1 − ᾱ_{t-1}) / (1 − ᾱ_t) "
+     },
+     {
+      "n": 19,
+      "answer": "Experiment design: (1) Sample 1000 images using DDIM with η = 0 and record the sequence of latents X_t, X_{t'}, X_{t''}, ... (2) Reverse the process by sampling in reverse order using the same learned model and check if the reconstructed images match the forward trajectory (near-zero MSE indicates r"
+     },
+     {
+      "n": 20,
+      "answer": "Proposed modification: σ_t = η · g(||ϵ_θ(X_t, t)||) · √((1 − ᾱ_t) / (1 − ᾱ_{t'})) √(1 − ᾱ_t / ᾱ_{t'}), where g(·) is an adaptive function such as g(x) = min(1, x / c) for some confidence threshold c, or g(x) = 1 / (1 + exp(−k(x − c))) (sigmoid annealing). Justification: (1) When the model is confide"
+     }
+    ]
+   }
+  },
+  {
+   "n": 2,
+   "prompt": "add qustion abt the varaince schedual",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 5.0,
+   "text": "Adding variance schedule questions to the quiz — I'm including detailed items on noise schedules, β_t selection, cumulative schedules, and SNR dynamics. Updating it now.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": {
+    "artifact_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "artifact_type": "assessment",
+    "assessment_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "instruction": "Add 3–4 focused short-answer and MCQ questions specifically on variance schedules (β_t, α_t, ᾱ_t, linear vs. cosine schedules, SNR evolution, and schedule selection for training stability). Ground questions in the exam keywords from the cheat sheet: 'Variance schedule', 'noise schedule', 'retention at step', 'SNR at step', 'ratio of data to noise'. Include computational items (e.g. compute ᾱ_t given a schedule) and conceptual items (e.g. how schedule choice affects denoising difficulty). Insert them into Section A (MCQ) and Section B (Short Answer) at natural positions.",
+    "summary": "Added variance schedule deep-dive: 4 new questions on β_t selection, schedule types, SNR evolution, and schedule design"
+   },
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "n one abt the snr formulla too",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 4.3,
+   "text": "On it — adding a dedicated SNR formula question to the quiz. Updating it now.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": {
+    "artifact_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "artifact_type": "assessment",
+    "assessment_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "instruction": "Add 1–2 new short-answer or MCQ questions focused specifically on the SNR formula SNR_t = ᾱ_t / (1 − ᾱ_t). Questions should ask students to: (1) compute SNR_t given ᾱ_t values, (2) explain what SNR_t represents (signal-to-noise ratio evolution), (3) describe how SNR changes across timesteps and what it implies for denoising difficulty, or (4) relate SNR to the difficulty of predicting noise at different timesteps. Ground these in the cheat sheet definition and exam keywords ('SNR at step', 'ratio of data to noise'). Integrate them naturally into the assessment.",
+    "summary": "Added SNR formula questions with computational and conceptual depth"
+   },
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "need a q on ddim eta as wel, wat happens at eta 0",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 4.9,
+   "text": "Adding a focused question on DDIM η (eta) parameter and the deterministic case when η = 0. Updating the quiz now.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": {
+    "artifact_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "artifact_type": "assessment",
+    "assessment_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "instruction": "Add a new short-answer or MCQ question focusing specifically on the DDIM η (eta) parameter and what happens when η = 0. Ground the question in the selected text: when η = 0, the variance term σ_t = 0 and the process becomes fully deterministic (ODE); the z_t term disappears; the sampling trajectory is perfectly reversible; this is mentioned in the 'Deterministic DDIM' caveat section. Ask either (a) what η = 0 produces and why (determinism, reversibility, no stochasticity), or (b) the mathematical consequence of η = 0 in the variance formula σ_t = η√(...), or (c) how η interpolates between DDIM (η=0, ODE) and DDPM (η=1, stochastic). Include it as a new question in Section A (MCQ) or B (short answer) and renumber subsequent questions.",
+    "summary": "Added DDIM η = 0 deterministic sampling question"
+   },
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 5,
+   "prompt": "make em all mcq 4 optns 1 corect each",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 5.4,
+   "text": "Converting all questions to MCQ with 4 options and one correct answer per question. Updating the quiz now.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": {
+    "artifact_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "artifact_type": "assessment",
+    "assessment_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "instruction": "Convert ALL 20 questions to multiple-choice format with exactly 4 options each and one correct answer. Remove all short-answer questions. Keep all MCQ questions already present. Ensure every question has a clear correct option marked in the answer key. Include the variance schedule questions, SNR formula question, and DDIM η parameter question (η=0 deterministic case) that were requested. Total: 20 MCQ, 5 marks each, 100 marks total. Ground all questions in the 06_diffusion_ddpm_ddim_notes.pdf cheat sheet.",
+    "summary": "Converted to 20 MCQ (4 options, 1 correct each) — all sections including variance schedule, SNR formula, and DDIM η=0 behavior"
+   },
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "studnt copy no ansers pls",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 4.8,
+   "text": "Done — converting to student copy (MCQs only, no answer key). Updating the assessment now.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": {
+    "artifact_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "artifact_type": "assessment",
+    "assessment_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "instruction": "Remove all answer keys, explanations, and rubric. Convert ALL questions to MCQ format with exactly 4 options (A, B, C, D) and one marked correct answer per question. Include questions on: variance schedule (β_t, α_t, ᾱ_t), SNR formula (SNR_t = ᾱ_t / (1 − ᾱ_t)), and DDIM η parameter (especially η = 0 deterministic case). Ensure no student-facing answers or answer key section appears in the output. Title: 'AI623 DDPM & DDIM Diffusion Models — Student Quiz'.",
+    "summary": "Converted to student MCQ version — all short answers removed, all questions are now 4-option MCQs, answer key hidden."
+   },
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 7,
+   "prompt": "now techer ky w short explnations",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 6.7,
+   "text": "Adding a teacher key with short explanations for each answer. Updating the assessment now.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": {
+    "artifact_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "artifact_type": "assessment",
+    "assessment_id": "27dbe0e1-6daa-44cf-8ad0-c6503b920bbe",
+    "instruction": "Convert the current MCQ-only student copy into a TEACHER VERSION that includes: (1) all 20 MCQ questions with 4 options each, (2) a separate Answer Key section at the end listing the correct answer for each question, (3) a one- to two-sentence short explanation for EACH correct answer (why that option is right, grounded in the diffusion notes from 06_diffusion_ddpm_ddim_notes.pdf). Keep the student questions unchanged; add only the teacher answer key below them.",
+    "summary": "Adding teacher answer key with brief explanations to each MCQ"
+   },
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 8,
+   "prompt": "wich file did u use",
+   "selection": [
+    "06_diffusion_ddpm_ddim_notes.pdf"
+   ],
+   "latency_s": 3.1,
+   "text": "I used **06_diffusion_ddpm_ddim_notes.pdf** — the file you attached to this message. All the quiz content (forward process, reverse process, variance schedules, SNR formula, DDIM η parameter) came directly from that cheat sheet.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make harder version",
+    "Add essay questions",
+    "Focus on one topic"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  }
+ ]
+}

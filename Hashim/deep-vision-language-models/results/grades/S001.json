@@ -1,0 +1,17 @@
+{
+  "scenario": "S001",
+  "turns": [
+    {"n": 1, "verdict": "Pass", "main_issue": "None", "note": "DDPM one-step Markovian vs DDIM non-Markovian jump via x̂_0 all match the notes; source_mode=file; DDIM master step and DDIM-to-DDPM connection (t'=t−1, η=1) quoted correctly."},
+    {"n": 2, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "η=0 deterministic/ODE and η=1+t'=t−1→DDPM behavior all correct and quotes the notes' Deterministic-DDIM caveat, but writes σ_t² = η·(1−ᾱ_t')/(1−ᾱ_t)·(1−ᾱ_t/ᾱ_t') — squaring the notes' σ_t = η√(...)√(...) requires η², not η."},
+    {"n": 3, "verdict": "Pass", "main_issue": "None", "note": "Closed-form jump x_t=√ᾱ_t·x_0+√(1−ᾱ_t)·ε with ᾱ_t=∏α_i, sum-of-Gaussians/variances-add reasoning, and boundary ᾱ_T≈0→x_T~N(0,I) all match the notes' Reparameterization Trick caveat, quoted verbatim."},
+    {"n": 4, "verdict": "Small Issue", "main_issue": "Incorrect content", "note": "Exactly 4 questions on the built-up η/closed-form material with a real generated artifact and correct answer key, but the Q3 stem inverts both ratios of the notes' DDIM variance: σ_t = η√((1−ᾱ_t)/(1−ᾱ_t'))√(1−ᾱ_t'/ᾱ_t) instead of η√((1−ᾱ_t')/(1−ᾱ_t))√(1−ᾱ_t/ᾱ_t')."},
+    {"n": 5, "verdict": "Small Issue", "main_issue": "Changed unrelated content", "note": "Student version has all 4 questions and zero answer leakage, but the Q3 formula was silently altered from the teacher version (first ratio now matches the notes, second factor still inverted as 1−ᾱ_t'/ᾱ_t, which is negative for t'<t)."},
+    {"n": 6, "verdict": "Pass", "main_issue": "None", "note": "Correctly names 06_diffusion_ddpm_ddim_notes.pdf as the single source used throughout; no invented files, no hedging."}
+  ],
+  "overall": "Pass with small issue",
+  "understanding": "Yes",
+  "source_use": "Yes",
+  "output_quality": "Partly",
+  "conversation_handling": "Yes",
+  "highlight": "Grounding and multi-turn continuity are excellent, but Fazah is sloppy transcribing the DDIM variance formula — η where η² belongs in turn 2 and inverted ᾱ ratios in the quiz Q3 stem (teacher and student versions even disagree with each other)."
+}

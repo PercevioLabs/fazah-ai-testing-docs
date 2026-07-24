@@ -1,0 +1,307 @@
+{
+ "scenario": "S017",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "hmm can u make me 5 questions from lecture 2",
+   "selection": [
+    "14_handwritten_class_notes_L2.pdf"
+   ],
+   "latency_s": 6.6,
+   "text": "I'd be happy to build a 5-question quiz from Lecture 2 — but the PDF you attached hasn't extracted its text yet (it's still scanning). Let me give you a couple of options:\n\n**Option 1:** I can wait a moment for the scan to complete, then build the quiz directly from the notes.\n\n**Option 2:** You could paste the key topics/concepts from Lecture 2 here (or tell me which concepts it covered), and I'll draft 5 solid questions right now from that.\n\n**Option 3:** If you remember the main ideas — e.g. \"diffusion models, noise schedules, forward vs. reverse process\" — just say those and I'll propose the quiz.\n\nWhich works best for you?",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 2,
+   "prompt": "the handwritten notes, file 14 i think",
+   "selection": [
+    "14_handwritten_class_notes_L2.pdf"
+   ],
+   "latency_s": 3.7,
+   "text": "I understand — file 14 is the one you attached. The issue is that it's a **handwritten PDF**, so the text extraction is still in progress and hasn't finished yet. I can't read the handwriting until that scan completes.\n\nHere's what I can do:\n\n**Right now:**\n- **Describe the key topics** from Lecture 2 (even just a few bullet points), and I'll build 5 sharp questions immediately from those.\n- Or **take a photo/screenshot** of the clearest pages and paste it — I can read images directly.\n\n**In a moment:**\n- The scan should finish soon. Once it does, I'll have the full text and can draft the quiz.\n\nWhich would you prefer — give me the topics now, or wait a bit for the scan?",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "wait u cant read my handwriting at all?? whats even in that file then",
+   "selection": [
+    "14_handwritten_class_notes_L2.pdf"
+   ],
+   "latency_s": 3.6,
+   "text": "You're right to call that out — I apologize. Let me be honest: the file is there, but the platform's text extraction for handwritten PDFs is still running (it shows \"no extracted text yet\"). Until that scan finishes, I literally have no content to read — not even metadata like page count or image previews.\n\nSo right now I can't see **anything** from the file itself — no handwriting, no structure, nothing.\n\nOnce the scan completes, I'll have the actual content and can build your 5 questions straight from Lecture 2.\n\n**In the meantime**, if you want to speed this up:\n- Paste a quick summary of what L2 covered (topics, key concepts)\n- Or describe 2–3 main ideas from the lecture\n\nThen I can draft the quiz right now while we wait for the full scan. Your call!",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "ok fine, lecture 2 was VAEs and denoising autoencoders. just use the vae notes file instead",
+   "selection": [
+    "14_handwritten_class_notes_L2.pdf",
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 5.4,
+   "text": "Building a 5-question quiz on VAEs and Denoising Autoencoders from your course notes — covering the reparameterization trick, ELBO, KL divergence, reconstruction loss, and posterior collapse. Review and tweak on the card, then generate.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make it harder — add posterior collapse scenarios",
+    "Add the HVAE section too",
+    "Generate worked solutions"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": [
+    {
+     "title": "VAEs & Denoising Autoencoders — Lecture 2 Quiz",
+     "type": "assessment",
+     "params": {
+      "topic": "VAEs and Denoising Autoencoders",
+      "assessment_type": "quiz",
+      "question_count": 5,
+      "question_types": [
+       "mcq",
+       "short_answer"
+      ],
+      "level": "advanced",
+      "language": "en"
+     }
+    }
+   ],
+   "artifact": {
+    "assessment_id": "3aed9d6e-253c-43ea-b563-9bafa1b114ef",
+    "status": "completed",
+    "latency_s": 52.4,
+    "title": "AI623 Quiz: VAEs and Denoising Autoencoders",
+    "question_total": 5,
+    "marks_total": 25,
+    "types": [
+     "mcq",
+     "short_answer"
+    ],
+    "questions": [
+     {
+      "n": 1,
+      "type": "mcq",
+      "marks": 5,
+      "text": "In Tweedie's formula (Equation 1.3), the expression \\(E[x \\mid \\tilde{x}] = \\tilde{x} + \\sigma^2 \\nabla \\log P(\\tilde{x})\\) decomposes into three intuitive components: \\(\\tilde{x}\\) is where you are, \\(\\nabla \\log P(\\tilde{x})\\) is the direction of clean images, and \\(\\sigma^2\\) controls how big a step you take. Which of the following best explains why the score vector \\(\\nabla \\log P(\\tilde{x})\\)"
+     },
+     {
+      "n": 2,
+      "type": "mcq",
+      "marks": 5,
+      "text": "You are designing a denoising autoencoder for noisy medical images. The network can be trained in two ways: (A) directly predict the clean image \\(\\hat{x}\\) given a noisy input \\(\\tilde{x}\\) and minimize MSE loss, or (B) predict the score vector \\(\\nabla \\log P(\\tilde{x})\\) and apply Tweedie's formula. Which approach and reasoning is correct?"
+     },
+     {
+      "n": 3,
+      "type": "mcq",
+      "marks": 5,
+      "text": "A Hierarchical VAE (L=3) factorizes the inference model as \\(q_\\phi(z_1, z_2, z_3 | x) = q_\\phi(z_1 | x) q_\\phi(z_2 | z_1) q_\\phi(z_3 | z_2)\\) and the generative model as \\(P_\\theta(x, z_1, z_2, z_3) = P(z_3) P_\\theta(z_2 | z_3) P_\\theta(z_1 | z_2) P_\\theta(x | z_1)\\). What property of the Markovian factorization ensures that the HVAE can be trained with a well-defined ELBO?"
+     },
+     {
+      "n": 4,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "Describe the forward corruption process in a Denoising Autoencoder (Equation 1.1). Given a clean image \\(x\\), explain what \\(\\tilde{x} = x + \\epsilon\\) represents, where \\(\\epsilon \\sim N(0, \\sigma^2 I)\\), and why corrupting the data in this way is essential for the denoising training objective."
+     },
+     {
+      "n": 5,
+      "type": "short_answer",
+      "marks": 5,
+      "text": "Compare the Denoising Autoencoder (DAE) approach using Equation 1.2 (direct MSE reconstruction) and the Score Matching approach using Equation 1.3 (Tweedie's formula). In what ways does the score-based method provide a richer representation of the data geometry than the standard MSE-based DAE, and what is the practical trade-off?"
+     }
+    ],
+    "answer_key": [
+     {
+      "n": 1,
+      "answer": "A"
+     },
+     {
+      "n": 2,
+      "answer": "B"
+     },
+     {
+      "n": 3,
+      "answer": "B"
+     },
+     {
+      "n": 4,
+      "answer": "The forward corruption process adds Gaussian noise ε to a clean image x to produce a noisy image x̃ = x + ε, where ε ~ N(0, σ² I). This pushes the data off the clean data manifold by mixing it with random noise. This corruption is essential because it creates paired training data: the network learns"
+     },
+     {
+      "n": 5,
+      "answer": "The score-based method (Tweedie's formula) captures richer geometric information because it learns ∇ log P(x̃)—the gradient of the probability density—which encodes the local structure and direction toward high-probability regions. This gradient information provides a principled, density-aware path "
+     }
+    ]
+   }
+  },
+  {
+   "n": 5,
+   "prompt": "go ahead, 5 questions",
+   "selection": [
+    "14_handwritten_class_notes_L2.pdf",
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 4.0,
+   "text": "On it — creating a 5-question quiz on VAEs and Denoising Autoencoders from your course notes. Review it on the card and hit Generate.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Make it 10 questions instead",
+    "Add more on diffusion models",
+    "Focus on HVAEs"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": [
+    {
+     "title": "AI623 Quiz: VAEs and Denoising Autoencoders (L2)",
+     "type": "assessment",
+     "params": {
+      "topic": "VAEs and Denoising Autoencoders",
+      "assessment_type": "quiz",
+      "question_count": 5,
+      "question_types": [
+       "mcq",
+       "short_answer"
+      ],
+      "language": "en",
+      "level": "advanced"
+     }
+    }
+   ]
+  },
+  {
+   "n": 6,
+   "prompt": "add answers to those 5",
+   "selection": [
+    "14_handwritten_class_notes_L2.pdf",
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 3.2,
+   "text": "Adding answer key to the VAE quiz now — updating it in the panel.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": {
+    "artifact_id": "3aed9d6e-253c-43ea-b563-9bafa1b114ef",
+    "artifact_type": "assessment",
+    "assessment_id": "3aed9d6e-253c-43ea-b563-9bafa1b114ef",
+    "instruction": "Add a complete answer key to all 5 questions. For each question, provide: (1) the correct answer or full solution, (2) a brief explanation of the key concept being tested. Format clearly with Q1–Q5 labels.",
+    "summary": "Added answer key with solutions and explanations"
+   },
+   "intent": {
+    "type": "artifact_revision",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 7,
+   "prompt": "can i get a student version w no answers",
+   "selection": [
+    "14_handwritten_class_notes_L2.pdf",
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 3.0,
+   "text": "Creating a student version without the answer key — updating it now.",
+   "source_mode": "file",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": {
+    "artifact_id": "3aed9d6e-253c-43ea-b563-9bafa1b114ef",
+    "artifact_type": "assessment",
+    "assessment_id": "3aed9d6e-253c-43ea-b563-9bafa1b114ef",
+    "instruction": "Remove the entire answer key section from this quiz. Keep all 5 questions (Q1–Q5) with their full text, marks, and options intact. Delete only the '[Answer key]' section and all answer explanations that follow it.",
+    "summary": "Removed answer key for student distribution"
+   },
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 8,
+   "prompt": "just to confirm, which file did u actually end up using for all this",
+   "selection": [
+    "14_handwritten_class_notes_L2.pdf",
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 2.2,
+   "text": "Good catch — I used **04_vae_denoising_autoencoders_notes.pdf** (the VAE Cheat Sheet) for all of it. That's the file with the equations, exam keywords, and the high-probability exam combinations.\n\nThe handwritten notes file (14) never finished scanning, so I couldn't pull from that — but the VAE notes file had exactly what I needed to build the quiz.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Review the questions",
+    "Make it harder",
+    "Add explanations",
+    "Create student notes",
+    "Export it"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  }
+ ]
+}

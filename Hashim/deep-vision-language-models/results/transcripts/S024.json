@@ -1,0 +1,169 @@
+{
+ "scenario": "S024",
+ "course_id": "98aa6cf0-1929-4484-8fdf-06e8a7eacddd",
+ "setup_selection": [
+  "04_vae_denoising_autoencoders_notes.pdf"
+ ],
+ "turns": [
+  {
+   "n": 1,
+   "prompt": "explain how a denoising autoencoder corrupts its input",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 8.3,
+   "text": "A denoising autoencoder (DAE) corrupts its input by **adding Gaussian noise** during training — the forward corruption process — to deliberately push clean images off the data manifold and force the network to learn how to reconstruct them.\n\n## The Forward Corruption (Equation 1.1)\n\nThe corruption is mathematically simple:\n\n$$ \\tilde{x} = x_0 + \\epsilon $$\n\nwhere:\n- \\( x_0 \\) is your original, clean image\n- \\( \\epsilon \\) is Gaussian noise sampled as \\( \\epsilon \\sim \\mathcal{N}(0, \\sigma^2 I) \\)\n- \\( \\tilde{x} \\) is the corrupted (noisy) version the network actually sees\n\n## Why This Works\n\n**The manifold intuition**: Clean images don't exist everywhere in pixel space — they lie on a lower-dimensional **data manifold**. By adding noise, the corruption pushes the image away from that manifold into a high-probability noise region. The network must then learn to \"reverse\" this corruption and pull the noisy input back onto the clean data manifold.\n\nDuring training:\n1. You start with a clean image \\( x_0 \\)\n2. You sample noise \\( \\epsilon \\) from a Gaussian and add it → you get \\( \\tilde{x} \\)\n3. You feed \\( \\tilde{x} \\) (the noisy version) into the encoder\n4. The network tries to reconstruct the original clean image \\( x_0 \\) from the noisy input\n5. You measure the **MSE reconstruction loss** (Equation 1.2): how badly the network failed to recover the clean image\n\nThe standard deviation \\( \\sigma \\) controls the **corruption strength**: larger \\( \\sigma \\) means more noise (harder task), smaller \\( \\sigma \\) means less noise (easier task).\n\n## Why Not Just Train on Clean Images?\n\nIf you only fed clean images to a standard autoencoder, the network would learn the trivial solution: \"just output the input unchanged.\" By corrupting the input, you force the network to **learn the structure of the data** — it must recognize which features matter and which are just noise. This learned denoising ability is what gives DAEs their power: the resulting model implicitly learns the probability density of the data, captured through the score function (gradient of log-density).",
+   "source_mode": "file",
+   "follow_ups": [
+    "How does Tweedie's formula use the score function?",
+    "What's the difference between DAE loss and VAE reconstruction loss?",
+    "Why does larger noise σ make training harder?"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "source_answer",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 2,
+   "prompt": "ok now whats tweedie's formula and what does it actually do",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 8.5,
+   "text": "## Tweedie's Formula\n\nTweedie's formula is a **mathematical bridge** that connects what a denoising autoencoder learns (how to denoise) to what a score-matching model learns (the gradient of the log-density). It lets you use a DAE's denoising ability to estimate the **posterior mean** — the clean image you expect to see given a noisy observation.\n\n## The Formula (Equation 1.3)\n\n$$ E[x \\mid \\tilde{x}] = \\tilde{x} + \\sigma^2 \\nabla \\log P(\\tilde{x}) $$\n\nwhere:\n- \\( E[x \\mid \\tilde{x}] \\) is the **expected clean image** given you observed a noisy image \\( \\tilde{x} \\)\n- \\( \\tilde{x} \\) is **where you are** (the noisy input)\n- \\( \\nabla \\log P(\\tilde{x}) \\) is the **score vector** — the gradient of the log-density, pointing toward regions of high probability\n- \\( \\sigma^2 \\) is **how big a step you take** in that direction\n\n## What It Actually Does\n\nThink of it as a **three-part correction**:\n\n1. **Start at the noisy image** (\\( \\tilde{x} \\)) — that's your current location.\n2. **Ask the score function \"which way is clean?\"** (\\( \\nabla \\log P(\\tilde{x}) \\)) — the score points toward the data manifold.\n3. **Take a weighted step** in that direction, proportional to the noise level (\\( \\sigma^2 \\)).\n\nThe result is an estimate of what the true clean image should be.\n\n## The DAE Connection\n\nHere's the key insight: **a denoising autoencoder implicitly learns the score function**. When you train a DAE to reconstruct clean images from noisy inputs, the network learns to output something very close to \\( \\sigma^2 \\nabla \\log P(\\tilde{x}) \\) — the correction needed to move from noisy to clean.\n\nSo in practice:\n- The DAE's **output** (what it predicts) ≈ \\( \\sigma^2 \\nabla \\log P(\\tilde{x}) \\)\n- Plug that into Tweedie's formula: \\( E[x \\mid \\tilde{x}] = \\tilde{x} + \\text{[DAE output]} \\)\n- You get an estimate of the clean image\n\n## Exam Scenario (from your notes)\n\n**Combo B** asks you to compare two approaches:\n- **Direct prediction** (Eq 1.2): Train DAE to directly output the clean image, measure MSE loss.\n- **Score matching** (Eq 1.3): Train DAE to output the score vector, then use Tweedie's formula to reconstruct.\n\nBoth approaches work — they're mathematically equivalent — but score matching is more elegant because it makes the generative process explicit: you're literally walking up the gradient of the data density toward clean images.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 3,
+   "prompt": "now the reparameterization trick, write the formula out",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 5.1,
+   "text": "## The Reparameterization Trick (Equation 2.1)\n\n$$ z = \\mu_\\phi(x) + \\sigma_\\phi(x) \\odot \\epsilon $$\n\nwhere:\n- \\( z \\) is the **latent vector** sampled from the encoder\n- \\( \\mu_\\phi(x) \\) is the **mean** output by the encoder (deterministic, depends on input \\( x \\) and encoder parameters \\( \\phi \\))\n- \\( \\sigma_\\phi(x) \\) is the **standard deviation** output by the encoder (also deterministic)\n- \\( \\epsilon \\sim \\mathcal{N}(0, I) \\) is **standard Gaussian noise** sampled independently each forward pass\n- \\( \\odot \\) is **element-wise multiplication** (Hadamard product)\n\n## What It Does\n\nInstead of sampling \\( z \\) directly from a distribution (which breaks backpropagation), you:\n\n1. **Compute the mean and variance deterministically** from the input using the encoder network\n2. **Sample noise independently** from a standard normal\n3. **Scale and shift the noise** by the learned mean and variance\n\nThis **decouples randomness from the network parameters**: the noise is random, but how you use it is deterministic and differentiable.\n\n## Why This Matters\n\nWithout the reparameterization trick, you'd sample \\( z \\sim \\mathcal{N}(\\mu_\\phi(x), \\sigma_\\phi^2(x)) \\) directly, and gradients cannot flow backward through a random sampling operation.\n\nWith the trick, the sampling is **pushed outside the network** — you can differentiate through the scaling and shifting operations, so backpropagation works end-to-end during training.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 4,
+   "prompt": "but why do we even need that trick",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 8.1,
+   "text": "Good question — because **you need to train the encoder end-to-end with backpropagation, but the encoder outputs a probability distribution, not a single value**.\n\n## The Core Problem\n\nIn a VAE, the encoder doesn't output a single latent vector \\( z \\). Instead, it outputs:\n- A **mean** \\( \\mu_\\phi(x) \\)\n- A **variance** \\( \\sigma_\\phi^2(x) \\)\n\nThis defines a distribution: \\( \\mathcal{N}(\\mu_\\phi(x), \\sigma_\\phi^2(x)) \\).\n\nYou need to **sample** a \\( z \\) from that distribution to pass to the decoder. But here's the problem:\n\n**Sampling is not differentiable.**\n\nIf you write naively:\n```\nz = sample_from_normal(mu, sigma)  # This breaks backprop!\nloss = compute_vae_loss(z)\nloss.backward()  # Gradients cannot flow back through the sampling\n```\n\nBackpropagation cannot compute gradients through a random sampling operation. The gradient of \"pick a random number\" with respect to the network parameters is undefined.\n\n## The Solution: Push Randomness Outside\n\nThe reparameterization trick moves the randomness **outside the network**:\n\n$$ z = \\mu_\\phi(x) + \\sigma_\\phi(x) \\odot \\epsilon, \\quad \\epsilon \\sim \\mathcal{N}(0, I) $$\n\nNow:\n- \\( \\mu_\\phi(x) \\) and \\( \\sigma_\\phi(x) \\) are **deterministic** outputs of the network → differentiable ✓\n- \\( \\epsilon \\) is just **noise you sample once** → not a parameter, no gradients needed\n- The \\( + \\) and \\( \\odot \\) operations are **differentiable** ✓\n\nSo gradients can flow backward through the mean and variance outputs, and the encoder learns to produce good distributions.\n\n**In short**: Without the trick, you can't train the encoder. With it, you can.",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  },
+  {
+   "n": 5,
+   "prompt": "put all 3 into one summary sheet i can hand my students",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 9.7,
+   "text": "```markdown\n# VAE & DAE Essentials: Three Core Concepts\n\n## 1. Forward Corruption (Denoising Autoencoders)\n\n**Formula:**\n$$\\tilde{x} = x_0 + \\epsilon, \\quad \\epsilon \\sim \\mathcal{N}(0, \\sigma^2 I)$$\n\n**What it does:**\n- Adds Gaussian noise to a clean image to push it off the data manifold\n- Forces the network to learn what \"clean\" looks like by recovering corrupted inputs\n\n**The three parts:**\n- $x_0$ = your original clean image\n- $\\epsilon$ = noise sampled from a Gaussian (strength controlled by $\\sigma$)\n- $\\tilde{x}$ = the corrupted version the network actually sees\n\n**Why it matters:**\nIf you only trained on clean images, the network would learn the trivial solution: \"output the input unchanged.\" Corruption forces it to learn the true structure of the data.\n\n---\n\n## 2. Tweedie's Formula (The Score Bridge)\n\n**Formula:**\n$$E[x \\mid \\tilde{x}] = \\tilde{x} + \\sigma^2 \\nabla \\log P(\\tilde{x})$$\n\n**What it does:**\n- Estimates the clean image given a noisy observation\n- Connects denoising to the score function (gradient of log-density)\n\n**The three parts (step by step):**\n1. $\\tilde{x}$ = **where you are** (the noisy input)\n2. $\\nabla \\log P(\\tilde{x})$ = **which way is clean?** (the score points toward the data manifold)\n3. $\\sigma^2$ = **how big a step you take** (proportional to noise level)\n\n**The connection:**\nA DAE learns to output $\\sigma^2 \\nabla \\log P(\\tilde{x})$ implicitly. Plug that into Tweedie's formula and you get an estimate of the clean image — that's why DAEs and score-based models are related.\n\n---\n\n## 3. The Reparameterization Trick (VAE Training)\n\n**Formula:**\n$$z = \\mu_\\phi(x) + \\sigma_\\phi(x) \\odot \\epsilon, \\quad \\epsilon \\sim \\mathcal{N}(0, I)$$\n\n**What it does:**\n- Allows you to sample from a learned distribution while maintaining differentiability\n- Lets gradients flow backward through the encoder during backpropagation\n\n**The three parts:**\n- $\\mu_\\phi(x)$ = **mean** output by the encoder (deterministic)\n- $\\sigma_\\phi(x)$ = **standard deviation** output by the encoder (deterministic)\n- $\\epsilon$ = **independent Gaussian noise** sampled fresh each forward pass\n- $\\odot$ = element-wise multiplication\n\n**Why it's necessary:**\nThe encoder outputs a distribution, not a single value. You need to sample $z$ from that distribution, but **sampling is not differentiable**. The trick pushes randomness outside the network, making the mean and variance outputs (and the $+$ and $\\odot$ operations) fully differentiable so backprop works end-to-end.\n\n**The key insight:**\nWithout this trick, you cannot train the encoder. With it, gradients flow backward through the learned mean and variance, and the encoder learns to produce good distributions.\n\n---\n\n## Quick Reference: When to Use Each\n\n| Concept | Problem It Solves |\n|---------|-------------------|\n| **Forward Corruption** | Training a denoising autoencoder that learns to reverse noise |\n| **Tweedie's Formula** | Converting a denoising model into a generative model (score-based) |\n| **Reparameterization Trick** | Training a VAE encoder end-to-end with backpropagation |\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "teaching_material",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 6,
+   "prompt": "end the sheet with 4 self-check questions students can answer from it",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 6.8,
+   "text": "```markdown\n# VAE & DAE Essentials: Three Core Concepts\n\n## 1. Forward Corruption (Denoising Autoencoders)\n\n**Formula:**\n$$\\tilde{x} = x_0 + \\epsilon, \\quad \\epsilon \\sim \\mathcal{N}(0, \\sigma^2 I)$$\n\n**What it does:**\n- Adds Gaussian noise to a clean image to push it off the data manifold\n- Forces the network to learn what \"clean\" looks like by recovering corrupted inputs\n\n**The three parts:**\n- $x_0$ = your original clean image\n- $\\epsilon$ = noise sampled from a Gaussian (strength controlled by $\\sigma$)\n- $\\tilde{x}$ = the corrupted version the network actually sees\n\n**Why it matters:**\nIf you only trained on clean images, the network would learn the trivial solution: \"output the input unchanged.\" Corruption forces it to learn the true structure of the data.\n\n---\n\n## 2. Tweedie's Formula (The Score Bridge)\n\n**Formula:**\n$$E[x \\mid \\tilde{x}] = \\tilde{x} + \\sigma^2 \\nabla \\log P(\\tilde{x})$$\n\n**What it does:**\n- Estimates the clean image given a noisy observation\n- Connects denoising to the score function (gradient of log-density)\n\n**The three parts (step by step):**\n1. $\\tilde{x}$ = **where you are** (the noisy input)\n2. $\\nabla \\log P(\\tilde{x})$ = **which way is clean?** (the score points toward the data manifold)\n3. $\\sigma^2$ = **how big a step you take** (proportional to noise level)\n\n**The connection:**\nA DAE learns to output $\\sigma^2 \\nabla \\log P(\\tilde{x})$ implicitly. Plug that into Tweedie's formula and you get an estimate of the clean image — that's why DAEs and score-based models are related.\n\n---\n\n## 3. The Reparameterization Trick (VAE Training)\n\n**Formula:**\n$$z = \\mu_\\phi(x) + \\sigma_\\phi(x) \\odot \\epsilon, \\quad \\epsilon \\sim \\mathcal{N}(0, I)$$\n\n**What it does:**\n- Allows you to sample from a learned distribution while maintaining differentiability\n- Lets gradients flow backward through the encoder during backpropagation\n\n**The three parts:**\n- $\\mu_\\phi(x)$ = **mean** output by the encoder (deterministic)\n- $\\sigma_\\phi(x)$ = **standard deviation** output by the encoder (deterministic)\n- $\\epsilon$ = **independent Gaussian noise** sampled fresh each forward pass\n- $\\odot$ = element-wise multiplication\n\n**Why it's necessary:**\nThe encoder outputs a distribution, not a single value. You need to sample $z$ from that distribution, but **sampling is not differentiable**. The trick pushes randomness outside the network, making the mean and variance outputs (and the $+$ and $\\odot$ operations) fully differentiable so backprop works end-to-end.\n\n**The key insight:**\nWithout this trick, you cannot train the encoder. With it, gradients flow backward through the learned mean and variance, and the encoder learns to produce good distributions.\n\n---\n\n## Quick Reference: When to Use Each\n\n| Concept | Problem It Solves |\n|---------|-------------------|\n| **Forward Corruption** | Training a denoising autoencoder that learns to reverse noise |\n| **Tweedie's Formula** | Converting a denoising model into a generative model (score-based) |\n| **Reparameterization Trick** | Training a VAE encoder end-to-end with backpropagation |\n\n---\n\n## Self-Check Questions\n\n**Q1: Forward Corruption**\nIf you train a denoising autoencoder with a very small $\\sigma$ (weak corruption), what problem might you run into? Why would a larger $\\sigma$ force the network to learn better?\n\n**Q2: Tweedie's Formula**\nIn Tweedie's formula $E[x \\mid \\tilde{x}] = \\tilde{x} + \\sigma^2 \\nabla \\log P(\\tilde{x})$, what does the term $\\sigma^2 \\nabla \\log P(\\tilde{x})$ represent, and why is it multiplied by $\\sigma^2$ and not some other constant?\n\n**Q3: Reparameterization Trick**\nExplain why you cannot simply write `z = sample_from_normal(mu, sigma)` and then backpropagate through it. What specific operation breaks differentiability?\n\n**Q4: Connecting All Three**\nA score-based diffusion model uses Tweedie's formula to denoise at each step. If you trained that model using a denoising autoencoder (forward corruption + MSE loss), how does the reparameterization trick ensure the encoder learns a good representation?\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "assessment",
+    "confidence": 0.95
+   },
+   "suggestions": []
+  },
+  {
+   "n": 7,
+   "prompt": "make sure the self-check qs dont have answers printed next to them, this goes straight to students",
+   "selection": [
+    "04_vae_denoising_autoencoders_notes.pdf"
+   ],
+   "latency_s": 6.6,
+   "text": "```markdown\n# VAE & DAE Essentials: Three Core Concepts\n\n## 1. Forward Corruption (Denoising Autoencoders)\n\n**Formula:**\n$$\\tilde{x} = x_0 + \\epsilon, \\quad \\epsilon \\sim \\mathcal{N}(0, \\sigma^2 I)$$\n\n**What it does:**\n- Adds Gaussian noise to a clean image to push it off the data manifold\n- Forces the network to learn what \"clean\" looks like by recovering corrupted inputs\n\n**The three parts:**\n- $x_0$ = your original clean image\n- $\\epsilon$ = noise sampled from a Gaussian (strength controlled by $\\sigma$)\n- $\\tilde{x}$ = the corrupted version the network actually sees\n\n**Why it matters:**\nIf you only trained on clean images, the network would learn the trivial solution: \"output the input unchanged.\" Corruption forces it to learn the true structure of the data.\n\n---\n\n## 2. Tweedie's Formula (The Score Bridge)\n\n**Formula:**\n$$E[x \\mid \\tilde{x}] = \\tilde{x} + \\sigma^2 \\nabla \\log P(\\tilde{x})$$\n\n**What it does:**\n- Estimates the clean image given a noisy observation\n- Connects denoising to the score function (gradient of log-density)\n\n**The three parts (step by step):**\n1. $\\tilde{x}$ = **where you are** (the noisy input)\n2. $\\nabla \\log P(\\tilde{x})$ = **which way is clean?** (the score points toward the data manifold)\n3. $\\sigma^2$ = **how big a step you take** (proportional to noise level)\n\n**The connection:**\nA DAE learns to output $\\sigma^2 \\nabla \\log P(\\tilde{x})$ implicitly. Plug that into Tweedie's formula and you get an estimate of the clean image — that's why DAEs and score-based models are related.\n\n---\n\n## 3. The Reparameterization Trick (VAE Training)\n\n**Formula:**\n$$z = \\mu_\\phi(x) + \\sigma_\\phi(x) \\odot \\epsilon, \\quad \\epsilon \\sim \\mathcal{N}(0, I)$$\n\n**What it does:**\n- Allows you to sample from a learned distribution while maintaining differentiability\n- Lets gradients flow backward through the encoder during backpropagation\n\n**The three parts:**\n- $\\mu_\\phi(x)$ = **mean** output by the encoder (deterministic)\n- $\\sigma_\\phi(x)$ = **standard deviation** output by the encoder (deterministic)\n- $\\epsilon$ = **independent Gaussian noise** sampled fresh each forward pass\n- $\\odot$ = element-wise multiplication\n\n**Why it's necessary:**\nThe encoder outputs a distribution, not a single value. You need to sample $z$ from that distribution, but **sampling is not differentiable**. The trick pushes randomness outside the network, making the mean and variance outputs (and the $+$ and $\\odot$ operations) fully differentiable so backprop works end-to-end.\n\n**The key insight:**\nWithout this trick, you cannot train the encoder. With it, gradients flow backward through the learned mean and variance, and the encoder learns to produce good distributions.\n\n---\n\n## Quick Reference: When to Use Each\n\n| Concept | Problem It Solves |\n|---------|-------------------|\n| **Forward Corruption** | Training a denoising autoencoder that learns to reverse noise |\n| **Tweedie's Formula** | Converting a denoising model into a generative model (score-based) |\n| **Reparameterization Trick** | Training a VAE encoder end-to-end with backpropagation |\n\n---\n\n## Self-Check Questions\n\n**Q1: Forward Corruption**  \nIf you train a denoising autoencoder with a very small $\\sigma$ (weak corruption), what problem might you run into? Why would a larger $\\sigma$ force the network to learn better?\n\n**Q2: Tweedie's Formula**  \nIn Tweedie's formula $E[x \\mid \\tilde{x}] = \\tilde{x} + \\sigma^2 \\nabla \\log P(\\tilde{x})$, what does the term $\\sigma^2 \\nabla \\log P(\\tilde{x})$ represent, and why is it multiplied by $\\sigma^2$ and not some other constant?\n\n**Q3: Reparameterization Trick**  \nExplain why you cannot simply write `z = sample_from_normal(mu, sigma)` and then backpropagate through it. What specific operation breaks differentiability?\n\n**Q4: Connecting All Three**  \nA score-based diffusion model uses Tweedie's formula to denoise at each step. If you trained that model using a denoising autoencoder (forward corruption + MSE loss), how does the reparameterization trick ensure the encoder learns a good representation?\n```",
+   "source_mode": "none",
+   "follow_ups": [
+    "Create a quiz",
+    "Create slides",
+    "What are the key topics in my files?",
+    "Summarize a topic for students"
+   ],
+   "clarify": null,
+   "refine": null,
+   "intent": {
+    "type": "general_chat",
+    "confidence": 0.5
+   },
+   "suggestions": []
+  }
+ ]
+}

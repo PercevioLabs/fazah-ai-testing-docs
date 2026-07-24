@@ -1,0 +1,20 @@
+{
+  "scenario": "S020",
+  "turns": [
+    {"n": 1, "verdict": "Pass", "main_issue": "None", "note": "Asks only the single most essential question (topic scope) instead of interrogating or fabricating an exam."},
+    {"n": 2, "verdict": "Small Issue", "main_issue": "Other", "note": "Maps the scope to exactly the right three files (05, 06, 07) without re-asking, but the reply ends on a dangling 'A couple of quick choices:' with the choices missing."},
+    {"n": 3, "verdict": "Small Issue", "main_issue": "Other", "note": "Retains scope and accepts MS level without re-asking, but again ends on a truncated 'One quick choice:' stub."},
+    {"n": 4, "verdict": "Pass", "main_issue": "None", "note": "Captures every spec in one shot and generates a real exam: 6 questions, marks 2+3+2+4+4+5 = 20, advanced level, key included, content spanning NCSN score/loss, abar_t, DDIM step, and the CFM conditional velocity that genuinely exists in the 07 notes."},
+    {"n": 5, "verdict": "Small Issue", "main_issue": "Other", "note": "'ok build it' produces a second near-duplicate suggestion card instead of recognizing the exam was already built in turn 4."},
+    {"n": 6, "verdict": "Pass", "main_issue": "None", "note": "Targeted refine replaces only the easiest question with a VE/VP SDE comparison correctly grounded in 07 notes Part 1 (VE f=0, VP f=-1/2 beta(t)x), keeping the rest."},
+    {"n": 7, "verdict": "Fail", "main_issue": "Changed unrelated content", "note": "A verification request triggered another mutation: the refine re-issues 'Replace the easiest question... recalculate all mark allocations' instead of summing and reporting the total, and no actual per-question sum is ever shown."},
+    {"n": 8, "verdict": "Fail", "main_issue": "Lost previous work", "note": "No answers leak and the total is still 20, but the 'student copy' is a substantially regenerated exam - numeric values changed ([2.0,1.0]/0.5 became [3.0,-1.0]/0.8), the abar_t question vanished, and a new DDPM posterior question appeared whose given premise formula (mu = x_t + ((1-abar_{t-1})/beta_t) grad log q) matches no identity in the notes."},
+    {"n": 9, "verdict": "Fail", "main_issue": "Incorrect content", "note": "Q4(b) applies the wrong score convention: with x_tilde = x + sigma*eps as used in its own part (a), the notes give S_true = -eps/sigma = (x - x_tilde)/sigma^2 = [-0.625, 0.375], not the key's -eps/sigma^2 = [-0.781, 0.469]; the key also truncates mid-Q5(b), never covering Q5(c) or Q6."}
+  ],
+  "overall": "Fail",
+  "understanding": "Yes",
+  "source_use": "Yes",
+  "output_quality": "Partly",
+  "conversation_handling": "Partly",
+  "highlight": "Spec accumulation across the clarification turns was clean and the initial 20-mark exam was well grounded, but the endgame broke: 'double check the total' triggered another destructive replacement refine, the student copy silently regenerated questions and numbers, and the standalone key misapplies the NCSN score convention (-eps/sigma^2 with unit-variance noise) and cuts off before Q6."
+}

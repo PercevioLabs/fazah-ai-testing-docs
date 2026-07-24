@@ -1,0 +1,17 @@
+{
+  "scenario": "S013",
+  "turns": [
+    {"n": 1, "verdict": "Pass", "main_issue": "None", "note": "LLM/VLM/MLLM definitions match slide 2 verbatim (VLM = LLM + vision encoder, text output; MLLM = text/images/video/audio), source_mode=file. Note: the harness never appended the auditor's one added instruction, so only the base prompt could be graded."},
+    {"n": 2, "verdict": "Pass", "main_issue": "None", "note": "One apt example per type (LLM text-only summary; VLM photo of equation to text solution; MLLM video+audio+text) with the turn-1 definitions preserved verbatim."},
+    {"n": 3, "verdict": "Pass", "main_issue": "None", "note": "Exclusion list matches slide 3 exactly (Convolutions+Attention, CNNs, RNNs, LSTMs, Transformers, how to train/evaluate/build/deploy) with a correct slide-3 citation; source_mode='none' despite the verbatim grounding is the only blemish."},
+    {"n": 4, "verdict": "Pass", "main_issue": "None", "note": "Exactly 3 definitional questions, all answerable from slide 2 (VLM distinguishing feature; video+dialogue scenario resolving to MLLM; LLM/VLM/MLLM hierarchy)."},
+    {"n": 5, "verdict": "Fail", "main_issue": "Changed unrelated content", "note": "No answer leakage, but the 'student version' silently replaced the Turn-4 questions (Q1 became a new handwritten-equation scenario, Q3 became MLLM-vs-VLM advantage) - grading the student copy with the Turn-4 key (B, C, ...) would misscore students."},
+    {"n": 6, "verdict": "Pass", "main_issue": "None", "note": "Names 01_dvlm_introduction.pptx with an accurate slide-2 reference and honestly states the questions were derived from, not copied out of, the deck."}
+  ],
+  "overall": "Fail",
+  "understanding": "Yes",
+  "source_use": "Yes",
+  "output_quality": "Partly",
+  "conversation_handling": "Partly",
+  "highlight": "Definitions, exclusions, and even slide-number citations are flawless against the intro deck; the one real defect is that the student copy rewrote the quiz instead of stripping answers, desynchronizing it from the Turn-4 teacher key."
+}
